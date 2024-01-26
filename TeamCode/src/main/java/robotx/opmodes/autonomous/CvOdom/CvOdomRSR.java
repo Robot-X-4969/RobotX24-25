@@ -1,22 +1,41 @@
 package robotx.opmodes.autonomous.CvOdom;
 
+import android.util.Size;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.util.trajectorysequence.TrajectorySequence;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
+
+import java.util.List;
 
 import robotx.modules.ArmSystem;
 import robotx.modules.IntakeSystem;
 import robotx.modules.LiftMotors;
 import robotx.modules.OpenCV;
+import robotx.modules.OrientationDrive;
+
+import org.firstinspires.ftc.teamcode.drive.*;
+import org.firstinspires.ftc.teamcode.util.trajectorysequence.*;
 
 @Autonomous(name = "CvOdomRSR", group = "CvOdom")
 public class CvOdomRSR extends LinearOpMode {
@@ -25,8 +44,6 @@ public class CvOdomRSR extends LinearOpMode {
     ArmSystem armSystem;
     IntakeSystem intakeSystem;
     LiftMotors liftMotors;
-
-    private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
 
     @Override
@@ -46,21 +63,15 @@ public class CvOdomRSR extends LinearOpMode {
         liftMotors.start();
 
 
-
         //testing var
-        int sleepTime = 1000;
-
+        int sleepTime = 2500;
         //openCV camera / pipeline setup
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         OpenCV detector = new OpenCV(telemetry);
         phoneCam.setPipeline(detector);
 
-        // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
-        // out when the RC activity is in portrait. We do our actual image processing assuming
-        // landscape orientation, though.
         phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
-
         phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
@@ -69,44 +80,15 @@ public class CvOdomRSR extends LinearOpMode {
 
             @Override
             public void onError(int errorCode) {
-
             }
         });
         sleep(sleepTime);
 
-        // init pixelPos
-        String pixelPos = "None";
-
-        Boolean programSelected = false;
-        String sideSelect = "";
 
 
-        while (!programSelected){
-
-            sideSelect = "RSR";
-            programSelected = true;
-
-        }
-
-        telemetry.clearAll();
-
-        telemetry.addData("Program running: ", sideSelect);
-        telemetry.update();
-        telemetry.addData("current run", sideSelect);
-        telemetry.update();
-
-
-
-        String position = detector.getPosition();
-
-
-
-        Pose2d intakeDropPose = new Pose2d(11.5, -37, Math.toRadians(270));
-        Pose2d dropPose = new Pose2d(49.31, -36.11, Math.toRadians(0.00));
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        // defaults to middle bc that works the most consistently
-        TrajectorySequence fullAuton = drive.trajectorySequenceBuilder(new Pose2d(11.5, -63.10, Math.toRadians(270)))
-                .lineToLinearHeading(intakeDropPose)
+        TrajectorySequence center = drive.trajectorySequenceBuilder(new Pose2d(11.5, -63.10, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(11.5, -37, Math.toRadians(270)))
                 .addTemporalMarker(() -> {
                     intakeSystem.IntakeMotor.setPower(-.25);
                 })
@@ -120,7 +102,7 @@ public class CvOdomRSR extends LinearOpMode {
                     armSystem.autonMoveArm();
                 })
                 .waitSeconds(2)
-                .lineToLinearHeading(dropPose)
+                .lineToLinearHeading(new Pose2d(48, -36.11, Math.toRadians(0.00)))
                 .addTemporalMarker(() -> {
                     armSystem.autonToggleBlock();
                 })
@@ -135,87 +117,90 @@ public class CvOdomRSR extends LinearOpMode {
                 .build();
 
         //sets new pose2d for each pixel drop location
-        if (position.equals("Left")) {
-            intakeDropPose = new Pose2d(11.5,-37, Math.toRadians(0));
-            fullAuton = drive.trajectorySequenceBuilder(new Pose2d(11.20, -61.92, Math.toRadians(270)))
-                    .lineToLinearHeading(intakeDropPose)
-                    .addTemporalMarker(() -> {
-                        intakeSystem.IntakeMotor.setPower(-.25);
-                    })
-                    .waitSeconds(2)
-                    .addTemporalMarker(() -> {
-                        intakeSystem.IntakeMotor.setPower(0);
-                    })
-                    .splineTo(new Vector2d(38.93, -34.18), Math.toRadians(0.00))
-                    .addTemporalMarker(() -> {
-                        armSystem.autonMoveArm();
-                    })
-                    .waitSeconds(2)
-                    .lineToLinearHeading(dropPose)
-                    .addTemporalMarker(() -> {
-                        armSystem.autonToggleBlock();
-                    })
-                    .waitSeconds(2)
-                    .lineToConstantHeading(new Vector2d(45.45, -61.17))
-                    .addTemporalMarker(() -> {
-                        armSystem.autonMoveArm();
-                        armSystem.autonToggleBlock();
-                    })
-                    .waitSeconds(2)
-                    .splineTo(new Vector2d(58.50, -59.39), Math.toRadians(0.00))
-                    .build();
+
+        // left
+        TrajectorySequence fullAuton = drive.trajectorySequenceBuilder(new Pose2d(11.5, -63.10, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(11.5, -37, Math.toRadians(0)))
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(-.25);
+                })
+                .waitSeconds(2)
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(0);
+                })
+                .splineTo(new Vector2d(38.93, -34.18), Math.toRadians(0.00))
+                .addTemporalMarker(() -> {
+                    armSystem.autonMoveArm();
+                })
+                .waitSeconds(2)
+                .lineToLinearHeading(new Pose2d(47.5, -33, Math.toRadians(0.00)))
+                .addTemporalMarker(() -> {
+                    armSystem.autonToggleBlock();
+                })
+                .waitSeconds(2)
+                .lineToConstantHeading(new Vector2d(40, -61.17))
+                .addTemporalMarker(() -> {
+                    armSystem.autonMoveArm();
+                    armSystem.autonToggleBlock();
+                })
+                .waitSeconds(2)
+                .splineTo(new Vector2d(58.50, -61), Math.toRadians(0.00))
+                .build();
+
+        TrajectorySequence right = drive.trajectorySequenceBuilder(new Pose2d(11.5, -63.10, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(21.00, -40.00, Math.toRadians(270.00)))
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(-.25);
+                })
+                .waitSeconds(2)
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(0);
+                })
+                .splineTo(new Vector2d(43.23, -42.19), Math.toRadians(0.00))
+                .addTemporalMarker(() -> {
+                    armSystem.autonMoveArm();
+                })
+                .waitSeconds(2)
+                .lineToConstantHeading(new Vector2d(47.5, -44))
+                .addTemporalMarker(() -> {
+                    armSystem.autonToggleBlock();
+                })
+                .waitSeconds(2)
+                .lineToConstantHeading(new Vector2d(40.38, -61.32))
+                .addTemporalMarker(() -> {
+                    armSystem.autonMoveArm();
+                    armSystem.autonToggleBlock();
+                })
+                .waitSeconds(2)
+                .splineTo(new Vector2d(58.21, -59.69), Math.toRadians(0.00))
+                .build();
+
+        String position = detector.getPosition();
+        sleep(sleepTime);
+        if (position.equals("Center")) {
+            fullAuton = center;
         } else if (position.equals("Right")) {
-            fullAuton = drive.trajectorySequenceBuilder(new Pose2d(11.20, -61.92, Math.toRadians(270)))
-                    .lineToLinearHeading(new Pose2d(24.00, -40.00, Math.toRadians(270.00)))
-                    .addTemporalMarker(() -> {
-                        intakeSystem.IntakeMotor.setPower(-.25);
-                    })
-                    .waitSeconds(2)
-                    .addTemporalMarker(() -> {
-                        intakeSystem.IntakeMotor.setPower(0);
-                    })
-                    .splineTo(new Vector2d(43.23, -42.19), Math.toRadians(0.00))
-                    .addTemporalMarker(() -> {
-                        armSystem.autonMoveArm();
-                    })
-                    .waitSeconds(2)
-                    .lineToConstantHeading(new Vector2d(51.53, -41.45))
-                    .addTemporalMarker(() -> {
-                        armSystem.autonToggleBlock();
-                    })
-                    .waitSeconds(2)
-                    .lineToConstantHeading(new Vector2d(43.38, -61.32))
-                    .addTemporalMarker(() -> {
-                        armSystem.autonMoveArm();
-                        armSystem.autonToggleBlock();
-                    })
-                    .waitSeconds(2)
-                    .splineTo(new Vector2d(58.21, -59.69), Math.toRadians(0.00))
-                    .build();
-            }
+            fullAuton = right;
+        }
+        phoneCam.stopStreaming();
+        phoneCam.stopRecordingPipeline();
+        phoneCam.closeCameraDevice();
+
+        drive.setPoseEstimate(fullAuton.start());
 
 
+        waitForStart();
+
+        drive.followTrajectorySequence(fullAuton);
+
+        // defaults to middle bc that works the most consistently
 
 
-            drive.setPoseEstimate(fullAuton.start());
-
-
-
-            telemetry.addData("Status", "Initialized");
-            telemetry.update();
-            waitForStart();
-
-            if (isStopRequested()) return;
-
-            drive.followTrajectorySequence(fullAuton);
-
-
-
-            while (!isStopRequested() && opModeIsActive()){
-
-            }
+        while (!isStopRequested() && opModeIsActive()) {
 
         }
+
+    }
 
 
     /* flipped drop side left
@@ -237,7 +222,7 @@ public class CvOdomRSR extends LinearOpMode {
 
      */
 
-    
+
 
 
 

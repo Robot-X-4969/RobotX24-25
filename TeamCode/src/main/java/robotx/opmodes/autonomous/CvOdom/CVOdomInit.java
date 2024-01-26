@@ -1,14 +1,29 @@
 package robotx.opmodes.autonomous.CvOdom;
 
+import android.util.Size;
+
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.vision.VisionPortal;
+import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
+import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
+
+import java.util.List;
 
 import robotx.modules.ArmSystem;
 import robotx.modules.IntakeSystem;
@@ -16,6 +31,7 @@ import robotx.modules.LiftMotors;
 import robotx.modules.MecanumDrive;
 import robotx.modules.OpenCV;
 import robotx.modules.OrientationDrive;
+import robotx.modules.OpenCV;
 
 @Autonomous(name = "CvOdomInit", group = "CvOdom")
 public class CVOdomInit extends LinearOpMode {
@@ -77,47 +93,20 @@ public class CVOdomInit extends LinearOpMode {
         OpenCV detector = new OpenCV(telemetry);
         phoneCam.setPipeline(detector);
 
-        // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
-        // out when the RC activity is in portrait. We do our actual image processing assuming
-        // landscape orientation, though.
         phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
-
         phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
                 phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
             }
-
             @Override
-            public void onError(int errorCode) {
-
-            }
-        });
+            public void onError(int errorCode) {} });
         sleep(sleepTime);
-
-        // init pixelPos
-        String pixelPos = "None";
-
-        Boolean programSelected = false;
-        String sideSelect = "";
-
+        String sideSelect = "RSR";
         telemetry.clearAll();
-        telemetry.update();
-
-        while (!programSelected){
-
-            sideSelect = "RSR";
-            programSelected = true;
-
-        }
-
-        telemetry.clearAll();
-
         telemetry.addData("Program running: ", sideSelect);
         telemetry.update();
-        telemetry.addData("current run", sideSelect);
-        telemetry.update();
-        
+
         waitForStart();
 
         String pos = detector.getPosition();
@@ -131,12 +120,12 @@ public class CVOdomInit extends LinearOpMode {
         phoneCam.stopRecordingPipeline();
         phoneCam.closeCameraDevice();
 
-        
+
 
         //code that runs
         while (opModeIsActive()) {
 
-        //add in movements to here
+            //add in movements to here
 
 
 

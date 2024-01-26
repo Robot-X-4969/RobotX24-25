@@ -1,6 +1,7 @@
 package robotx.modules;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import android.location.Location;
+
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
@@ -8,6 +9,7 @@ import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvPipeline;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 // current opencv relationships found as of (11/21/23)
             /*
@@ -97,10 +99,10 @@ public class OpenCV extends OpenCvPipeline {
     }
 
 
-    public void init(Mat firstFrame) {
+    public void init(Mat input) {
 
-        inputToCb(firstFrame);
-        inputToCr(firstFrame);
+        inputToCb(input);
+        inputToCr(input);
 
         region1_Cr = Cr.submat(new Rect(region1_pointA, region1_pointB));
         region1_Cb = Cb.submat(new Rect(region1_pointA, region1_pointB));

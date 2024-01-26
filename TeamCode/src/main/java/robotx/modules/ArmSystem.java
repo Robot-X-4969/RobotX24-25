@@ -62,10 +62,10 @@ public class ArmSystem extends XModule {
     public void autonMoveArm() {
         //dont touch without asking cstaut pls
         if (armDown) {
-            leftArm.setPosition(0.55);
-            rightArm.setPosition(0.60);
-            leftWrist.setPosition(.89);
-            rightWrist.setPosition(.16);
+            leftArm.setPosition(0.48);
+            rightArm.setPosition(0.59);
+            leftWrist.setPosition(.87);
+            rightWrist.setPosition(.21);
             armDown = false;
         } else {
             leftArm.setPosition(leftArmPos);
@@ -130,7 +130,7 @@ public class ArmSystem extends XModule {
         // button presses, calls methods
         /*
 
-        */
+         */
         if(k == 1){
             leftWrist.setPosition(leftWristPos);
             rightWrist.setPosition(rightWristPos);

@@ -2,6 +2,9 @@ package robotx.opmodes.autonomous.CvOdom;
 
 import android.util.Size;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -28,46 +31,23 @@ import java.util.List;
 import robotx.modules.ArmSystem;
 import robotx.modules.IntakeSystem;
 import robotx.modules.LiftMotors;
-import robotx.modules.MecanumDrive;
+import robotx.modules.OpenCV;
 import robotx.modules.OrientationDrive;
+
+import org.firstinspires.ftc.teamcode.drive.*;
+import org.firstinspires.ftc.teamcode.util.trajectorysequence.*;
 
 @Autonomous(name = "CvOdomBSL", group = "CvOdom")
 public class CvOdomBSL extends LinearOpMode {
 
     OpenCvWebcam phoneCam;
-    SkystoneDeterminationPipeline pipeline;
-    MecanumDrive mecanumDrive;
-    OrientationDrive orientationDrive;
     ArmSystem armSystem;
     IntakeSystem intakeSystem;
     LiftMotors liftMotors;
 
-    private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-
-    /**
-     * {@link #aprilTag} is the variable to store our instance of the AprilTag processor.
-     */
-    private AprilTagProcessor aprilTag;
-
-    /**
-     * {@link #visionPortal} is the variable to store our instance of the vision portal.
-     */
-    private VisionPortal visionPortal;
 
     @Override
     public void runOpMode() {
-
-
-        // Setup, initialize, import modules
-
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-
-        mecanumDrive = new MecanumDrive(this);
-        mecanumDrive.init();
-
-        orientationDrive = new OrientationDrive(this);
-        orientationDrive.init();
 
         armSystem = new ArmSystem(this);
         armSystem.init();
@@ -78,625 +58,177 @@ public class CvOdomBSL extends LinearOpMode {
         liftMotors = new LiftMotors(this);
         liftMotors.init();
 
-        mecanumDrive.start();
-        orientationDrive.start();
         armSystem.start();
         intakeSystem.start();
         liftMotors.start();
 
-        mecanumDrive.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mecanumDrive.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mecanumDrive.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mecanumDrive.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         //testing var
-        int sleepTime = 1000;
-
+        int sleepTime = 2500;
         //openCV camera / pipeline setup
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        pipeline = new SkystoneDeterminationPipeline();
-        phoneCam.setPipeline(pipeline);
+        OpenCV detector = new OpenCV(telemetry);
+        phoneCam.setPipeline(detector);
 
-        // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
-        // out when the RC activity is in portrait. We do our actual image processing assuming
-        // landscape orientation, though.
         phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
-
         phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
-                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
             }
 
             @Override
             public void onError(int errorCode) {
-
             }
         });
+        sleep(sleepTime);
 
-        // init pixelPos
-        String pixelPos = "None";
 
-        Boolean programSelected = false;
-        String sideSelect = "";
 
-        telemetry.clearAll();
-        telemetry.update();
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        TrajectorySequence center = drive.trajectorySequenceBuilder(new Pose2d(11.5, 63.10, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(11.5, 37, Math.toRadians(90))) //pixel on ground
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(-.25);
+                })
+                .waitSeconds(2)
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(0);
+                })
+                .splineTo(new Vector2d(34.33, 35.67), Math.toRadians(0.00))
 
-        while (!programSelected){
+                .addTemporalMarker(() -> {
+                    armSystem.autonMoveArm();
+                })
+                .waitSeconds(2)
+                .lineToLinearHeading(new Pose2d(45.5, 36, Math.toRadians(0.00))) //drop on board
+                .addTemporalMarker(() -> {
+                    armSystem.autonToggleBlock();
+                })
+                .waitSeconds(2)
+                .lineToLinearHeading(new Pose2d(25.31, 36.11, Math.toRadians(0.00)))
+                .addTemporalMarker(() -> {
+                    armSystem.autonMoveArm();
+                    armSystem.autonToggleBlock();
+                })
+                .waitSeconds(2)
+                .splineTo(new Vector2d(58.80, 61.03), Math.toRadians(0.00))
+                .build();
 
-            sideSelect = "BSL";
-            programSelected = true;
+        //sets new pose2d for each pixel drop location
 
+        // right
+        TrajectorySequence fullAuton = drive.trajectorySequenceBuilder(new Pose2d(12, 63.10, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(12, 37, Math.toRadians(0))) //pixel on ground
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(-.25);
+                })
+                .waitSeconds(2)
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(0);
+                })
+                .splineTo(new Vector2d(38.93, 34.18), Math.toRadians(0.00))
+                .addTemporalMarker(() -> {
+                    armSystem.autonMoveArm();
+                })
+                .waitSeconds(2)
+                .lineToLinearHeading(new Pose2d(45.5, 23, Math.toRadians(0.00))) //drop on board
+                .addTemporalMarker(() -> {
+                    armSystem.autonToggleBlock();
+                })
+                .waitSeconds(2)
+                .lineToConstantHeading(new Vector2d(38, 61.17))
+                .addTemporalMarker(() -> {
+                    armSystem.autonMoveArm();
+                    armSystem.autonToggleBlock();
+                })
+                .waitSeconds(2)
+                .splineTo(new Vector2d(58.50, 59.39), Math.toRadians(0.00))
+                .build();
+
+        TrajectorySequence left = drive.trajectorySequenceBuilder(new Pose2d(11.5, 63.10, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(21.00, 40.00, Math.toRadians(90.00))) //pixel on ground
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(-.25);
+                })
+                .waitSeconds(2)
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(0);
+                })
+                .splineTo(new Vector2d(43.23, 42.19), Math.toRadians(0.00))
+                .addTemporalMarker(() -> {
+                    armSystem.autonMoveArm();
+                })
+                .waitSeconds(2)
+                .lineToConstantHeading(new Vector2d(45.5, 41.45)) //drop on board
+                .addTemporalMarker(() -> {
+                    armSystem.autonToggleBlock();
+                })
+                .waitSeconds(2)
+                .lineToConstantHeading(new Vector2d(40.38, 61.32))
+                .addTemporalMarker(() -> {
+                    armSystem.autonMoveArm();
+                    armSystem.autonToggleBlock();
+                })
+                .waitSeconds(2)
+                .splineTo(new Vector2d(58.21, 59.69), Math.toRadians(0.00))
+                .build();
+
+        String position = detector.getPosition();
+        sleep(sleepTime);
+        if (position.equals("Center")) {
+            fullAuton = center;
+        } else if (position.equals("Left")) {
+            fullAuton = left;
+        } else {
+            telemetry.addLine("Default odom");
+            telemetry.update();
         }
 
-        telemetry.clearAll();
+        phoneCam.stopStreaming();
+        phoneCam.stopRecordingPipeline();
+        phoneCam.closeCameraDevice();
 
-        telemetry.addData("Program running: ", sideSelect);
-        telemetry.update();
+        drive.setPoseEstimate(fullAuton.start());
+
 
         waitForStart();
 
-        //code that runs
-        while (opModeIsActive()) {
+        drive.followTrajectorySequence(fullAuton);
 
-            // current opencv relationships found as of (11/21/23)
-            /*
+        // defaults to middle bc that works the most consistently
 
-            Blue: Cb < Cr (50 < 200)
-            Red: Cb > Cr (215 > 100)
-            Grey: Cb = Cr
 
-            Will vary based on light conditions, but will hold to be true
-            Gray tiles are used, hence a spike in Cr means blue, spike in Cb is red
-
-            Analysis1 = Cb
-            Analysis2 = Cr
-             */
-
-            //for red side (currently)
-
-            // scanning will work for both sides, just need to change which way we are moving
-            //scan middle
-            switch (sideSelect) {
-                case "RSR" :
-                case "RSL" :
-                    for (int i = 0; i < 500; i++) {
-                        if (pipeline.getAnalysis1() > pipeline.getAnalysis2() + 75) {
-                            pixelPos = "Middle";
-                            break;
-                        }
-                        sleep(5);
-                    }
-                    break;
-                case "BSR":
-                case "BSL":
-                    for (int i = 0; i < 500; i++) {
-                        if (pipeline.getAnalysis2() > pipeline.getAnalysis1() + 75) {
-                            pixelPos = "Middle";
-                            break;
-                        }
-                        sleep(5);
-                    }
-                    break;
-            }
-
-            /**
-             * Need to test the value to move from one line to the other and if need to change camera view
-             */
-            int timeBetweenLines = 150;
-
-            switch (sideSelect){
-                case "RSR":
-
-                case "BSR":
-                    telemetry.addData("current run", sideSelect);
-                    telemetry.update();
-                    sleep(100);
-                    StrafeRight(0.8,timeBetweenLines);
-                    sleep(100);
-                    break;
-                case "RSL":
-                case "BSL":
-                    telemetry.addData("current run", sideSelect);
-                    telemetry.update();
-                    sleep(100);
-                    StrafeLeft(0.8,timeBetweenLines);
-                    sleep(100);
-                    break;
-            }
-
-            //scan outer (away from center)
-            switch (sideSelect) {
-                case "RSR" :
-                case "RSL" :
-                    for (int i = 0; i < 500; i++) {
-                        if (pipeline.getAnalysis1() > pipeline.getAnalysis2() + 15) {
-                            pixelPos = "Right";
-                            break;
-                        }
-                        sleep(1);
-                    }
-                    break;
-                case "BSR":
-                case "BSL":
-                    for (int i = 0; i < 500; i++) {
-                        if (pipeline.getAnalysis2() > pipeline.getAnalysis1() + 15) {
-                            pixelPos = "Right";
-                            break;
-                        }
-                        sleep(1);
-                    }
-                    break;
-            }
-
-            //then logically has to be the other option
-            if (pixelPos.equals("None")) {
-                pixelPos = "Left";
-            }
-
-            telemetry.addData("Position", pixelPos);
-            telemetry.update();
-
-            // close OpenCV camera
-            phoneCam.stopStreaming();
-            phoneCam.stopRecordingPipeline();
-            phoneCam.closeCameraDevice();
-
-            //movements place a pixel and get robot to the board
-            if (pixelPos.equals("Left")) {
-                //drive and drop off pixel
-                DriveBackward(0.5, 1200);
-                sleep(sleepTime);
-                TurnLeft(0.5, 300);
-                sleep(sleepTime);
-                DriveBackward(0.5, 200);
-                sleep(sleepTime);
-                DriveForward(0.5, 200);
-                sleep(sleepTime);
-                Unintake(0.7, 500);
-                sleep(sleepTime);
-                ArmUp();
-                DriveForward(0.5, 800);
-                sleep(sleepTime);
-
-            }
-            if (pixelPos.equals("Middle")) {
-                DriveBackward(0.5, 0);
-                sleep(sleepTime);
-                DriveForward(0.5, 0);
-                sleep(sleepTime);
-                Unintake(0.5, 0);
-                sleep(sleepTime);
-                TurnLeft(0.5, 0);
-                sleep(sleepTime);
-                DriveForward(0.5, 0);
-                sleep(sleepTime);
-            }
-            if (pixelPos.equals("Right")) {
-                StrafeLeft(0.5, 0);
-                sleep(sleepTime);
-                DriveBackward(0.5, 0);
-                sleep(sleepTime);
-                TurnLeft(0.5, 0);
-                sleep(sleepTime);
-                DriveBackward(0.5, 0);
-                sleep(sleepTime);
-                DriveForward(0.5, 0);
-                sleep(sleepTime);
-                Unintake(0.5, 0);
-                sleep(sleepTime);
-                DriveForward(0.5, 0);
-                sleep(sleepTime);
-            }
-
-            /*
-            code to set up getting to apriltags
-
-            left = 1 or 4
-            middle = 2 or 5
-            right = 3 or 6
-
-            ######## AprilTags Code is constant no matter what and should work no matter where the robot is on the board - change the "ConstantTimeMove1" var to edit how much it is moving
-            it is iterative, so could set to a low value it would just jerk a lot
-             */
-
-            int PlacementEval = 0;
-            int escapeThereIsAProbem = 0;
-
-            switch(pixelPos) {
-
-                case "Left":
-                    PlacementEval = 1;
-                    break;
-                case "Middle":
-                    PlacementEval = 2;
-                    break;
-                case "Right":
-                    PlacementEval = 3;
-                    break;
-            }
-
-            //clear telemetry for apriltags
-            telemetry.clear();
-
-            //start camera for apriltags
-            initAprilTag();
-
-            int constantTimeMove1 = 75;
-            int DetectionEval = 0;
-
-            //dependent on location in relation to the board
-
-            while (true){
-
-                aprilTag.getDetections();
-                List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-
-                //find and save current detection
-                for (AprilTagDetection detection : currentDetections) {
-                    //1-left, 3-right
-                    //time is not final
-
-                    if (detection.id == 1 || detection.id == 4) {
-                        // add in conditions for each
-                        DetectionEval = 1;
-
-                        telemetry.addData("Current april Tags Detection", detection.id);
-                        telemetry.update();
-                        break;
-                    }
-                    if (detection.id == 2 || detection.id == 5) {
-                        // add in conditions for each
-                        DetectionEval = 2;
-
-                        telemetry.addData("Current april Tags Detection", detection.id);
-                        telemetry.update();
-                        break;
-                    }
-                    if (detection.id == 3 || detection.id == 6) {
-                        // add in conditions for each
-                        DetectionEval = 3;
-
-                        telemetry.addData("Current april Tags Detection", detection.id);
-                        telemetry.update();
-                        break;
-                    }
-
-                }
-
-                //catch not scanning properly
-
-                if (DetectionEval == 0){
-                    telemetry.addData("FAIL", "FAIL");
-                    telemetry.update();
-
-                    escapeThereIsAProbem++;
-
-                    //temp sleep for testing
-                    sleep(1000);
-                    continue;
-
-                }
-
-                //more error handling
-                if (escapeThereIsAProbem > 10){
-                    telemetry.addData("FAIL", "WE ESCAPED");
-                    telemetry.update();
-                    break;
-                }
-
-                // if correct, score and end (stop looking)
-                if (PlacementEval == DetectionEval){
-
-                    ScoreAPixel(500);
-                    break;
-                }
-
-                // move to what should be correct place
-
-                if (PlacementEval > DetectionEval){
-
-                    StrafeRight(.8,(constantTimeMove1*(PlacementEval-DetectionEval)));
-                }
-
-                if (PlacementEval < DetectionEval){
-
-                    StrafeLeft(.8,(constantTimeMove1*(Math.abs(PlacementEval-DetectionEval))));
-
-                }
-
-            }
-            //at this point should have a pixel placed on the wall and parked
-
-            //sleep entire auto
-            sleep(30000);
+        while (!isStopRequested() && opModeIsActive()) {
 
         }
-        // apriltags end vision - don't kill CPU
-        visionPortal.close();
+
     }
 
-    private void initAprilTag() {
 
-        // Create the AprilTag processor.
-        aprilTag = new AprilTagProcessor.Builder()
-                //.setDrawAxes(false)
-                //.setDrawCubeProjection(false)
-                //.setDrawTagOutline(true)
-                //.setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
-                //.setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
-                //.setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+    /* flipped drop side left
+    fullAuton = drive.trajectorySequenceBuilder(new Pose2d(11.20, 61.92, Math.toRadians(90)))
+        .lineToLinearHeading(new Pose2d(13.72, 34.48, Math.toRadians(360.00)))
+        .splineTo(new Vector2d(38.93, 34.18), Math.toRadians(360.00))
+        .splineTo(new Vector2d(51.68, 30.18), Math.toRadians(357.95))
+        .lineToConstantHeading(new Vector2d(45.45, 61.17))
+        .splineTo(new Vector2d(59.39, 61.92), Math.toRadians(0.00))
+        .build();
+    flipped drop side right
+    fullAuton = drive.trajectorySequenceBuilder(new Pose2d(11.20, 61.92, Math.toRadians(91.33)))
+        .lineToLinearHeading(new Pose2d(24.00, 40.00, Math.toRadians(90.00)))
+        .splineTo(new Vector2d(43.23, 42.19), Math.toRadians(360.00))
+        .lineToConstantHeading(new Vector2d(51.53, 41.45))
+        .lineToConstantHeading(new Vector2d(46.05, 60.73))
+        .splineTo(new Vector2d(58.21, 61.77), Math.toRadians(0.00))
+        .build();
 
-                // == CAMERA CALIBRATION ==
-                // If you do not manually specify calibration parameters, the SDK will attempt
-                // to load a predefined calibration for your camera.
-                //.setLensIntrinsics(578.272, 578.272, 402.145, 221.506)
-
-                // ... these parameters are fx, fy, cx, cy.
-
-                .build();
-
-        // Create the vision portal by using a builder.
-        VisionPortal.Builder builder = new VisionPortal.Builder();
-
-        // Set the camera (webcam vs. built-in RC phone camera).
-        if (USE_WEBCAM) {
-            builder.setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"));
-        } else {
-            builder.setCamera(BuiltinCameraDirection.BACK);
-        }
-
-        // Choose a camera resolution. Not all cameras support all resolutions.
-        //builder.setCameraResolution(new Size(640, 480));
-        builder.setCameraResolution(new Size(640,480));
-
-        // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
-        //builder.enableCameraMonitoring(true);
-
-        // Set the stream format; MJPEG uses less bandwidth than default YUY2.
-        //builder.setStreamFormat(VisionPortal.StreamFormat.YUY2);
-
-        // Choose whether or not LiveView stops if no processors are enabled.
-        // If set "true", monitor shows solid orange screen if no processors enabled.
-        // If set "false", monitor shows camera view without annotations.
-        builder.setAutoStopLiveView(false);
-
-        // Set and enable the processor.
-        builder.addProcessor(aprilTag);
-
-        // Build the Vision Portal, using the above settings.
-        visionPortal = builder.build();
-
-        // Disable or re-enable the aprilTag processor at any time.
-        //visionPortal.setProcessorEnabled(aprilTag, true);
-
-    }   // end method initAprilTag()
-
-    private void telemetryAprilTag() {
-
-        List<AprilTagDetection> currentDetections = aprilTag.getDetections();
-        telemetry.addData("# AprilTags Detected", currentDetections.size());
-
-        // Step through the list of detections and display info for each one.
-        for (AprilTagDetection detection : currentDetections) {
-            if (detection.metadata != null) {
-                telemetry.addLine(String.format("\n==== (ID %d) %s", detection.id, detection.metadata.name));
-                telemetry.addLine(String.format("XYZ %6.1f %6.1f %6.1f  (inch)", detection.ftcPose.x, detection.ftcPose.y, detection.ftcPose.z));
-                telemetry.addLine(String.format("PRY %6.1f %6.1f %6.1f  (deg)", detection.ftcPose.pitch, detection.ftcPose.roll, detection.ftcPose.yaw));
-                telemetry.addLine(String.format("RBE %6.1f %6.1f %6.1f  (inch, deg, deg)", detection.ftcPose.range, detection.ftcPose.bearing, detection.ftcPose.elevation));
-            } else {
-                telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id));
-                telemetry.addLine(String.format("Center %6.0f %6.0f   (pixels)", detection.center.x, detection.center.y));
-            }
-        }   // end for() loop
-
-        // Add "key" information to telemetry
-        telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.");
-        telemetry.addLine("PRY = Pitch, Roll & Yaw (XYZ Rotation)");
-        telemetry.addLine("RBE = Range, Bearing & Elevation");
-
-    }   // end method telemetryAprilTag()
-
-    public static class SkystoneDeterminationPipeline extends OpenCvPipeline {
-
-        /*
-         * Some color constants
-         */
-
-        static final Scalar BLUE = new Scalar(0, 0, 255);
-        static final Scalar GREEN = new Scalar(0, 255, 0);
-
-        /*
-         * The core values which define the location and size of the sample regions
-         */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(130, 150);
-        //right side of object is even with inside of camera
-
-        static final int REGION_WIDTH = 20;
-        static final int REGION_HEIGHT = 20;
-
-        Point region1_pointA = new Point(
-                REGION1_TOPLEFT_ANCHOR_POINT.x,
-                REGION1_TOPLEFT_ANCHOR_POINT.y);
-        Point region1_pointB = new Point(
-                REGION1_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
-                REGION1_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
-
-        /*
-         * Working variables
-         */
-        Mat region1_Cb;
-        Mat region1_Cr;
-
-        Mat YCrCb = new Mat();
-        Mat Cb = new Mat();
-        Mat Cr = new Mat();
-
-        int avg1;
-        int avg2;
-
-        int avgCb;
-        int avgCr;
-
-        /*
-         * This function takes the RGB frame, converts to YCrCb,
-         * and extracts the Cb channel to the 'Cb' variable
-         */
-        void inputToCb(Mat input) {
-            Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
-            Core.extractChannel(YCrCb, Cb, 1);
-        }
-        void inputToCr(Mat input){
-            Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
-            Core.extractChannel(YCrCb, Cr, 2);
-        }
+     */
 
 
-        public void init(Mat firstFrame) {
-
-            inputToCb(firstFrame);
-            inputToCr(firstFrame);
-
-            region1_Cr = Cr.submat(new Rect(region1_pointA, region1_pointB));
-            region1_Cb = Cb.submat(new Rect(region1_pointA, region1_pointB));
-        }
-
-        @Override
-        public Mat processFrame(Mat input) {
-            inputToCb(input);
-            inputToCr(input);
-
-            avgCb = (int) Core.mean(region1_Cb).val[0];
-            avgCr = (int) Core.mean(region1_Cr).val[0];
-
-            Imgproc.rectangle(
-                    input, // Buffer to draw on
-                    region1_pointA, // First point which defines the rectangle
-                    region1_pointB, // Second point which defines the rectangle
-                    BLUE, // The color the rectangle is drawn in
-                    2); // Thickness of the rectangle lines
 
 
-            Imgproc.rectangle(
-                    input, // Buffer to draw on
-                    region1_pointA, // First point which defines the rectangle
-                    region1_pointB, // Second point which defines the rectangle
-                    GREEN, // The color the rectangle is drawn in
-                    -1); // Negative thickness means solid fill
-
-            return input;
-        }
-
-        public int getAnalysis1() {
-            avg1 = avgCb;
-            return avgCb;
-        }
-        public int getAnalysis2(){
-            avg2 = avgCr;
-            return avgCr;
-        }
-    }
-
-    //Controls
-
-
-    public void DriveForward(double power, int time) {
-        mecanumDrive.frontLeft.setPower(-power);  //top left when rev is down and ducky wheel is right
-        mecanumDrive.frontRight.setPower(power); //bottom left
-        mecanumDrive.backLeft.setPower(-power);   //top right
-        mecanumDrive.backRight.setPower(power); // bottom right
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void DriveBackward(double power, int time) {
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void StrafeRight(double power, int time) {
-        mecanumDrive.frontLeft.setPower(-power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void StrafeLeft(double power, int time) {
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(power);
-        mecanumDrive.backLeft.setPower(-power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void DiagonalLeft(double power, int time){
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void DiagonalRight(double power, int time){
-        mecanumDrive.frontLeft.setPower(-power);
-        mecanumDrive.frontRight.setPower(power);
-        mecanumDrive.backLeft.setPower(-power);
-        mecanumDrive.backRight.setPower(power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void TurnLeft(double power, int time) {
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(-power);
-        mecanumDrive.backRight.setPower(power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void TurnRight(double power, int time) {
-        mecanumDrive.frontLeft.setPower(-power);
-        mecanumDrive.frontRight.setPower(power);
-        mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
 
     public void Intake(double power, int time) {
         intakeSystem.IntakeMotor.setPower(power);
