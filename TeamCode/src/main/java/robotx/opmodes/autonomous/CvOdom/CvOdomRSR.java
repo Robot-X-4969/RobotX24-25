@@ -175,6 +175,9 @@ public class CvOdomRSR extends LinearOpMode {
                 .splineTo(new Vector2d(58.21, -59.69), Math.toRadians(0.00))
                 .build();
 
+
+        waitForStart();
+
         String position = detector.getPosition();
         sleep(sleepTime);
         if (position.equals("Center")) {
@@ -187,10 +190,6 @@ public class CvOdomRSR extends LinearOpMode {
         phoneCam.closeCameraDevice();
 
         drive.setPoseEstimate(fullAuton.start());
-
-
-        waitForStart();
-
         drive.followTrajectorySequence(fullAuton);
 
         // defaults to middle bc that works the most consistently
