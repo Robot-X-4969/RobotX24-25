@@ -80,7 +80,7 @@ public class AutonMethods extends XModule {
 
     public void DriveForward(double power, int time) {
         frontLeft.setPower(-power);  //top left when rev is down and ducky wheel is right
-        frontRight.setPower(-power); //bottom left
+        frontRight.setPower(power); //bottom left
         backLeft.setPower(-power);   //top right
         backRight.setPower(power); // bottom right
     }
@@ -92,7 +92,7 @@ public class AutonMethods extends XModule {
     }
     public void DriveBackward(double power, int time) {
         frontLeft.setPower(power);
-        frontRight.setPower(power);
+        frontRight.setPower(-power);
         backLeft.setPower(power);
         backRight.setPower(-power);
     }
@@ -104,32 +104,28 @@ public class AutonMethods extends XModule {
     }
     public void StrafeLeft(double power, int time) {
         frontLeft.setPower(power);
-        frontRight.setPower(-power);
+        frontRight.setPower(power);
         backLeft.setPower(-power);
         backRight.setPower(-power);
     }
     public void DiagonalLeft(double power, int time){
-        frontLeft.setPower(power);
-        frontRight.setPower(-power);
-        backLeft.setPower(power);
-        backRight.setPower(-power);
+        frontRight.setPower(power);
+        backLeft.setPower(-power);
     }
     public void DiagonalRight(double power, int time){
         frontLeft.setPower(-power);
-        frontRight.setPower(power);
-        backLeft.setPower(-power);
         backRight.setPower(power);
     }
     public void TurnLeft(double power, int time) {
         frontLeft.setPower(power);
-        frontRight.setPower(-power);
-        backLeft.setPower(-power);
+        frontRight.setPower(power);
+        backLeft.setPower(power);
         backRight.setPower(power);
     }
     public void TurnRight(double power, int time) {
         frontLeft.setPower(-power);
-        frontRight.setPower(power);
-        backLeft.setPower(power);
+        frontRight.setPower(-power);
+        backLeft.setPower(-power);
         backRight.setPower(-power);
     }
     public void Intake(double power, int time) {
