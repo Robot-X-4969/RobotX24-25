@@ -6,11 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-import robotx.modules.ArmSystem;
-import robotx.modules.IntakeSystem;
-import robotx.modules.LiftMotors;
-import robotx.modules.MecanumDrive;
-import robotx.modules.OrientationDrive;
+import robotx.modules.AutonMethods;
 
 @Autonomous(name = "ParkandPlaceandMoveRSR", group = "ParkandPlaceandMove")
 
@@ -19,12 +15,7 @@ public class ParkandPlaceandMoveRSR extends LinearOpMode {
     //private ElapsedTime runtime = new ElapsedTime();
 
     //Modules being imported
-    MecanumDrive mecanumDrive;
-    OrientationDrive orientationDrive;
-    //OdomSystem odomSystem;
-    ArmSystem armSystem;
-    LiftMotors liftMotors;
-    IntakeSystem intakeSystem;
+    AutonMethods autonMethods;
 
     @Override
 
@@ -34,55 +25,15 @@ public class ParkandPlaceandMoveRSR extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        mecanumDrive = new MecanumDrive(this);
-        mecanumDrive.init();
+        autonMethods = new AutonMethods(this);
+        autonMethods.init();
 
-        orientationDrive = new OrientationDrive(this);
-        orientationDrive.init();
-
-        //odomSystem = new OdomSystem(this);
-        //odomSystem.init();
-
-        armSystem = new ArmSystem(this);
-        armSystem.init();
-
-        intakeSystem = new IntakeSystem(this);
-        intakeSystem.init();
-
-        liftMotors = new LiftMotors(this);
-        liftMotors.init();
-
-        //odomSystem.start();
-        mecanumDrive.start();
-        orientationDrive.start();
-        armSystem.start();
-        intakeSystem.start();
-        liftMotors.start();
-
-        mecanumDrive.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mecanumDrive.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mecanumDrive.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mecanumDrive.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
+        autonMethods.start();
 
         telemetry.addData(">", "Press Play to Start Op Mode");
         telemetry.update();
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
-        /*Pose2d start = new Pose2d(0,0,0);
-        Vector2d board = new Vector2d(0,0);
-
-        drive.setPoseEstimate(start);
-
-        TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(start)
-                .lineToConstantHeading(board)
-                .build();
-        */
-
-        double power = 0.5;
-        int sleepTime = 1000;
-
 
         Boolean programSelected = false;
         String sideSelect = "";
@@ -117,20 +68,31 @@ public class ParkandPlaceandMoveRSR extends LinearOpMode {
                     telemetry.addData("current run", sideSelect);
                     telemetry.update();
                     sleep(100);
-                    StrafeRight(-0.5,1200);
+                    autonMethods.StrafeRight(-0.5);
+                    sleep(1200);
+                    autonMethods.DriveStop();
                     sleep(50);
-                    ArmUp();
-                    DriveForward(0.5,2000);
+                    //autonMethods.ArmUp();
+                    autonMethods.DriveForward(0.5);
+                    sleep(2000);
+                    autonMethods.DriveStop();
                     sleep(50);
-                    Release(500);
+                    //autonMethods.Release();
                     sleep(510);
-                    DriveBackward(0.5, 200);
+                    //autonMethods.Close();
+                    autonMethods.DriveBackward(0.5);
+                    sleep(200);
+                    autonMethods.DriveStop();
                     sleep(10);
-                    StrafeLeft(0.5, 1200);
+                    autonMethods.StrafeLeft(0.5);
+                    sleep(1200);
+                    autonMethods.DriveStop();
                     sleep(10);
-                    ArmRest();
+                    //autonMethods.ArmRest();
                     sleep(500);
-                    DriveForward(0.5, 500);
+                    autonMethods.DriveForward(0.5);
+                    sleep(500);
+                    autonMethods.DriveStop();
                     sleep(1000);
                     break;
             }
@@ -138,180 +100,5 @@ public class ParkandPlaceandMoveRSR extends LinearOpMode {
             sleep(30000);
 
         }
-    }
-
-
-    public void DriveForward(double power, int time) {
-        mecanumDrive.frontLeft.setPower(-power);  //top left when rev is down and ducky wheel is right
-        mecanumDrive.frontRight.setPower(-power); //bottom left
-        mecanumDrive.backLeft.setPower(-power);   //top right
-        mecanumDrive.backRight.setPower(power); // bottom right
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void DriveBackward(double power, int time) {
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(power);
-        mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void StrafeRight(double power, int time) {
-        mecanumDrive.frontLeft.setPower(-power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void StrafeLeft(double power, int time) {
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(-power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void DiagonalLeft(double power, int time){
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void DiagonalRight(double power, int time){
-        mecanumDrive.frontLeft.setPower(-power);
-        mecanumDrive.frontRight.setPower(power);
-        mecanumDrive.backLeft.setPower(-power);
-        mecanumDrive.backRight.setPower(power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void TurnLeft(double power, int time) {
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(-power);
-        mecanumDrive.backRight.setPower(power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void TurnRight(double power, int time) {
-        mecanumDrive.frontLeft.setPower(-power);
-        mecanumDrive.frontRight.setPower(power);
-        mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void Intake(double power, int time) {
-        intakeSystem.IntakeMotor.setPower(power);
-        sleep(time);
-        intakeSystem.IntakeMotor.setPower(0);
-    }
-
-    public void Unintake(double power, int time) {
-        intakeSystem.IntakeMotor.setPower(-power);
-        sleep(time);
-        intakeSystem.IntakeMotor.setPower(0);
-    }
-
-    public void FirstLift() {
-        double liftPower = 1;
-        int liftTime = 100;
-        liftMotors.LeftLift.setPower(liftPower);
-        liftMotors.RightLift.setPower(-liftPower);
-        sleep(liftTime);
-        liftMotors.LeftLift.setPower(0);
-        liftMotors.RightLift.setPower(0);
-    }
-
-    public void RaiseLift(double power, int time) {
-        liftMotors.LeftLift.setPower(power);
-        liftMotors.RightLift.setPower(-power);
-        sleep(time);
-        liftMotors.LeftLift.setPower(0);
-        liftMotors.RightLift.setPower(0);
-    }
-
-    public void LowerLift(double power, int time) {
-        liftMotors.LeftLift.setPower(-power);
-        liftMotors.RightLift.setPower(power);
-        sleep(time);
-        liftMotors.LeftLift.setPower(0);
-        liftMotors.RightLift.setPower(0);
-    }
-
-    public void ArmRest () {
-        armSystem.leftWrist.setPosition(.175);
-        armSystem.rightWrist.setPosition(.925);
-        armSystem.leftArm.setPosition(.274);
-        armSystem.rightArm.setPosition(.712);
-    }
-
-    public void ArmUp () {
-        armSystem.leftWrist.setPosition((.5775));
-        armSystem.rightWrist.setPosition((.2525));
-        sleep(500);
-        armSystem.leftWrist.setPosition(.975);
-        armSystem.rightWrist.setPosition(.1);
-        armSystem.leftArm.setPosition(.514);
-        armSystem.rightArm.setPosition(0.551);
-    }
-
-    public void Release(int time) {
-        armSystem.blockServo.setPosition(.6);
-        sleep(time);
-        armSystem.blockServo.setPosition(.1);
-    }
-
-    public void UnderBar (double power, int time) {
-        if(time < 1500){
-            time = 1500;
-        }
-        mecanumDrive.frontLeft.setPower(-power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(-power);
-        mecanumDrive.backRight.setPower(power);
-        sleep(1500);
-        ArmUp();
-        sleep(time-15-00);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
     }
 }

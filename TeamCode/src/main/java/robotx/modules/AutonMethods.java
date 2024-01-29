@@ -78,74 +78,74 @@ public class AutonMethods extends XModule {
         backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
-    public void DriveForward(double power, int time) {
+    public void DriveForward(double power) {
         frontLeft.setPower(-power);  //top left when rev is down and ducky wheel is right
         frontRight.setPower(power); //bottom left
         backLeft.setPower(-power);   //top right
         backRight.setPower(power); // bottom right
     }
-    public void DriveStop(double power, int time) {
+    public void DriveStop() {
         frontLeft.setPower(0);  //top left when rev is down and ducky wheel is right
         frontRight.setPower(0); //bottom left
         backLeft.setPower(0);   //top right
         backRight.setPower(0); // bottom right
     }
-    public void DriveBackward(double power, int time) {
+    public void DriveBackward(double power) {
         frontLeft.setPower(power);
         frontRight.setPower(-power);
         backLeft.setPower(power);
         backRight.setPower(-power);
     }
-    public void StrafeRight(double power, int time) {
+    public void StrafeRight(double power) {
         frontLeft.setPower(-power);
         frontRight.setPower(-power);
         backLeft.setPower(power);
         backRight.setPower(power);
     }
-    public void StrafeLeft(double power, int time) {
+    public void StrafeLeft(double power) {
         frontLeft.setPower(power);
         frontRight.setPower(power);
         backLeft.setPower(-power);
         backRight.setPower(-power);
     }
-    public void DiagonalLeft(double power, int time){
+    public void DiagonalLeft(double power){
         frontRight.setPower(power);
         backLeft.setPower(-power);
     }
-    public void DiagonalRight(double power, int time){
+    public void DiagonalRight(double power){
         frontLeft.setPower(-power);
         backRight.setPower(power);
     }
-    public void TurnLeft(double power, int time) {
+    public void TurnLeft(double power) {
         frontLeft.setPower(power);
         frontRight.setPower(power);
         backLeft.setPower(power);
         backRight.setPower(power);
     }
-    public void TurnRight(double power, int time) {
+    public void TurnRight(double power) {
         frontLeft.setPower(-power);
         frontRight.setPower(-power);
         backLeft.setPower(-power);
         backRight.setPower(-power);
     }
-    public void Intake(double power, int time) {
+    public void Intake(double power) {
         IntakeMotor.setPower(power);
     }
-    public void IntakeStop(double power, int time) {
+    public void IntakeStop(double power) {
         IntakeMotor.setPower(0);
     }
-    public void IntakeReverse(double power, int time) {
+    public void IntakeReverse(double power) {
         IntakeMotor.setPower(-power);
     }
-    public void LiftRaise(double power, int time) {
+    public void LiftRaise(double power) {
         LeftLift.setPower(power);
         RightLift.setPower(-power);
     }
-    public void LiftStop(double power, int time) {
+    public void LiftStop(double power) {
         LeftLift.setPower(power);
         RightLift.setPower(-power);
     }
-    public void LiftLower(double power, int time) {
+    public void LiftLower(double power) {
         LeftLift.setPower(-power);
         RightLift.setPower(power);
     }
@@ -165,10 +165,10 @@ public class AutonMethods extends XModule {
         leftWrist.setPosition(.87);
         rightWrist.setPosition(.21);
     }
-    public void Release(int time) {
+    public void Release() {
         blockServo.setPosition(.6);
     }
-    public void Close(int time) {
+    public void Close() {
         blockServo.setPosition(.1);
     }
 }

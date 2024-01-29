@@ -72,17 +72,6 @@ public class CvOdomBSL extends LinearOpMode {
         phoneCam.setPipeline(detector);
 
         phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
-        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-            }
-        });
-        sleep(sleepTime);
 
 
 
@@ -175,8 +164,23 @@ public class CvOdomBSL extends LinearOpMode {
                 .splineTo(new Vector2d(58.21, 59.69), Math.toRadians(0.00))
                 .build();
 
-        String position = detector.getPosition();
+
+
+        waitForStart();
+
+        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+            }
+        });
         sleep(sleepTime);
+        String position = detector.getPosition();
+        sleep(sleepTime/4);
         if (position.equals("Center")) {
             fullAuton = center;
         } else if (position.equals("Left")) {
@@ -190,11 +194,8 @@ public class CvOdomBSL extends LinearOpMode {
         phoneCam.stopRecordingPipeline();
         phoneCam.closeCameraDevice();
 
+
         drive.setPoseEstimate(fullAuton.start());
-
-
-        waitForStart();
-
         drive.followTrajectorySequence(fullAuton);
 
         // defaults to middle bc that works the most consistently

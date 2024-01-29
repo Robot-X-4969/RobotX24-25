@@ -70,19 +70,7 @@ public class CvOdomRSR extends LinearOpMode {
         phoneCam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         OpenCV detector = new OpenCV(telemetry);
         phoneCam.setPipeline(detector);
-
         phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
-        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-            }
-        });
-        sleep(sleepTime);
 
 
 
@@ -178,8 +166,19 @@ public class CvOdomRSR extends LinearOpMode {
 
         waitForStart();
 
-        String position = detector.getPosition();
+        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+            }
+        });
         sleep(sleepTime);
+        String position = detector.getPosition();
+        sleep(sleepTime/4 );
         if (position.equals("Center")) {
             fullAuton = center;
         } else if (position.equals("Right")) {
