@@ -16,8 +16,8 @@ public class ArmSystem extends XModule {
     public Servo rightWrist;
     public Servo blockServo;
 
-    double rightArmPos = .722;
-    double leftArmPos = .25;
+    double rightArmPos = .735;
+    double leftArmPos = .245;
 
     double rightWristPos = .925;
     double leftWristPos = .175;
@@ -116,7 +116,7 @@ public class ArmSystem extends XModule {
         blockServo = opMode.hardwareMap.servo.get("blockServo");
 
         leftArm.setDirection(Servo.Direction.REVERSE);
-        //rightArm.setDirection(Servo.Direction.REVERSE);
+        rightArm.setDirection(Servo.Direction.REVERSE);
 
         leftWrist.setPosition(leftWristPos);
         rightWrist.setPosition(rightWristPos);

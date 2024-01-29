@@ -29,7 +29,7 @@ public class GrapplingHook extends XModule {
         GrappleMotor = opMode.hardwareMap.dcMotor.get("GrappleMotor");
         Stabilizer = opMode.hardwareMap.servo.get("Stabilizer");
 
-        Stabilizer.setPosition(.56);
+        Stabilizer.setPosition(.26);
     }
 
     public void loop() {
@@ -37,14 +37,14 @@ public class GrapplingHook extends XModule {
             GrappleMotor.setPower(0);
             if (xGamepad1().left_bumper.wasPressed()) {
                 motor = !motor;
-                Stabilizer.setPosition(.56);
+                Stabilizer.setPosition(.26);
             }
             if (motor) {
                 GrappleMotor.setPower(-power);
             }
             if (xGamepad1().right_bumper.isDown()) {
                 GrappleMotor.setPower(power);
-                Stabilizer.setPosition(.05);
+                Stabilizer.setPosition(.8);
             }
         } else {
             if (xGamepad2().left_bumper.wasPressed()){
