@@ -9,9 +9,9 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import robotx.modules.MecanumDrive;
 import robotx.modules.OrientationDrive;
 
-@Autonomous(name = "ParkBSL", group = "ParkEverywhere")
+@Autonomous(name = "ParkEverywhere", group = "ParkEverywhere")
 
-public class ParkEverywhereBSL extends LinearOpMode {
+public class ParkEverywhere extends LinearOpMode {
 
     //private ElapsedTime runtime = new ElapsedTime();
 
@@ -34,10 +34,6 @@ public class ParkEverywhereBSL extends LinearOpMode {
         orientationDrive = new OrientationDrive(this);
         orientationDrive.init();
 
-        //odomSystem = new OdomSystem(this);
-        //odomSystem.init();
-
-        //odomSystem.start();
         mecanumDrive.start();
         orientationDrive.start();
 
@@ -52,20 +48,6 @@ public class ParkEverywhereBSL extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
-        /*Pose2d start = new Pose2d(0,0,0);
-        Vector2d board = new Vector2d(0,0);
-
-        drive.setPoseEstimate(start);
-
-        TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(start)
-                .lineToConstantHeading(board)
-                .build();
-        */
-
-        double power = 0.5;
-        int sleepTime = 1000;
-
-
         Boolean programSelected = false;
         String sideSelect = "";
 
@@ -73,8 +55,22 @@ public class ParkEverywhereBSL extends LinearOpMode {
         telemetry.update();
 
         while (!programSelected){
+            if (gamepad1.a){
+                sideSelect = "RSR";
+                programSelected = true;
+            }
+            if (gamepad1.b){
+                sideSelect = "RSL";
+                programSelected = true;
+            }
+            if (gamepad1.x){
+                sideSelect = "BSR";
+                programSelected = true;
+            }
+            if (gamepad1.y){
                 sideSelect = "BSL";
                 programSelected = true;
+            }
         }
 
         telemetry.addData("Program running: ", sideSelect);

@@ -119,7 +119,7 @@ public class CvOdomBSL extends LinearOpMode {
         //sets new pose2d for each pixel drop location
 
         // right
-        TrajectorySequence fullAuton = drive.trajectorySequenceBuilder(new Pose2d(12, 63.10, Math.toRadians(90)))
+        TrajectorySequence fullAuton = drive.trajectorySequenceBuilder(new Pose2d(11.5, 63.10, Math.toRadians(90)))
                 .lineToLinearHeading(new Pose2d(12, 37, Math.toRadians(0))) //pixel on ground
                 .addTemporalMarker(() -> {
                     intakeSystem.IntakeMotor.setPower(-.25);
