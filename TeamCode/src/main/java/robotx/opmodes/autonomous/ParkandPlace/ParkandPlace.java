@@ -1,7 +1,6 @@
 package robotx.opmodes.autonomous.ParkandPlace;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -13,11 +12,9 @@ import robotx.modules.LiftMotors;
 import robotx.modules.MecanumDrive;
 import robotx.modules.OrientationDrive;
 
-@Disabled
+@Autonomous(name = "ParkandPlaceRSR", group = "ParkandPlace")
 
-@Autonomous(name = "ParkandPlaceBSL", group = "ParkandPlace")
-
-public class ParkandPlaceBSL extends LinearOpMode {
+public class ParkandPlace extends LinearOpMode {
 
     //private ElapsedTime runtime = new ElapsedTime();
 
@@ -90,13 +87,26 @@ public class ParkandPlaceBSL extends LinearOpMode {
         Boolean programSelected = false;
         String sideSelect = "";
 
+        telemetry.addData("Info", "\n a:RSR \n b:RSL \n x:BSR \n y:BSL \n ");
         telemetry.update();
 
-        while (!programSelected){
-
+        while (!programSelected) {
+            if (gamepad1.a) {
+                sideSelect = "RSR";
+                programSelected = true;
+            }
+            if (gamepad1.b) {
+                sideSelect = "RSL";
+                programSelected = true;
+            }
+            if (gamepad1.x) {
+                sideSelect = "BSR";
+                programSelected = true;
+            }
+            if (gamepad1.y) {
                 sideSelect = "BSL";
                 programSelected = true;
-
+            }
         }
 
         telemetry.addData("Program running: ", sideSelect);

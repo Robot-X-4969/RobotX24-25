@@ -2,6 +2,9 @@ package robotx.opmodes.autonomous.CvOdom;
 
 import android.util.Size;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -28,41 +31,22 @@ import java.util.List;
 import robotx.modules.ArmSystem;
 import robotx.modules.IntakeSystem;
 import robotx.modules.LiftMotors;
-import robotx.modules.MecanumDrive;
 import robotx.modules.OpenCV;
 import robotx.modules.OrientationDrive;
-import robotx.modules.OpenCV;
 
-@Autonomous(name = "CvOdomInit", group = "CvOdom")
+import org.firstinspires.ftc.teamcode.drive.*;
+import org.firstinspires.ftc.teamcode.util.trajectorysequence.*;
+
+@Autonomous(name = "CvOdomRSR", group = "CvOdom")
 public class CVOdomInit extends LinearOpMode {
 
     OpenCvWebcam phoneCam;
-    MecanumDrive mecanumDrive;
-    OrientationDrive orientationDrive;
     ArmSystem armSystem;
     IntakeSystem intakeSystem;
     LiftMotors liftMotors;
 
-    private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-
-    /**
-     * {@link #visionPortal} is the variable to store our instance of the vision portal.
-     */
-
     @Override
     public void runOpMode() {
-
-
-        // Setup, initialize, import modules
-
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
-
-        mecanumDrive = new MecanumDrive(this);
-        mecanumDrive.init();
-
-        orientationDrive = new OrientationDrive(this);
-        orientationDrive.init();
 
         armSystem = new ArmSystem(this);
         armSystem.init();
@@ -73,164 +57,165 @@ public class CVOdomInit extends LinearOpMode {
         liftMotors = new LiftMotors(this);
         liftMotors.init();
 
-        mecanumDrive.start();
-        orientationDrive.start();
         armSystem.start();
         intakeSystem.start();
         liftMotors.start();
 
-        mecanumDrive.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mecanumDrive.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mecanumDrive.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mecanumDrive.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
         //testing var
-        int sleepTime = 1000;
-
+        int sleepTime = 2500;
         //openCV camera / pipeline setup
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
         OpenCV detector = new OpenCV(telemetry);
         phoneCam.setPipeline(detector);
-
         phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
+
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        TrajectorySequence center = drive.trajectorySequenceBuilder(new Pose2d(11.5, -63.10, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(11.5, -37, Math.toRadians(270)))
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(-.25);
+                })
+                .waitSeconds(2)
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(0);
+                })
+                .splineTo(new Vector2d(34.33, -35.67), Math.toRadians(0.00))
+
+                .addTemporalMarker(() -> {
+                    armSystem.autonMoveArm();
+                })
+                .waitSeconds(2)
+                .lineToLinearHeading(new Pose2d(48, -36.11, Math.toRadians(0.00)))
+                .addTemporalMarker(() -> {
+                    armSystem.autonToggleBlock();
+                })
+                .waitSeconds(2)
+                .lineToLinearHeading(new Pose2d(25.31, -36.11, Math.toRadians(0.00)))
+                .addTemporalMarker(() -> {
+                    armSystem.autonMoveArm();
+                    armSystem.autonToggleBlock();
+                })
+                .waitSeconds(2)
+                .splineTo(new Vector2d(58.80, -61.03), Math.toRadians(0.00))
+                .build();
+
+        //sets new pose2d for each pixel drop location
+
+        // left
+        TrajectorySequence fullAuton = drive.trajectorySequenceBuilder(new Pose2d(11.5, -63.10, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(11.5, -37, Math.toRadians(0)))
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(-.25);
+                })
+                .waitSeconds(2)
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(0);
+                })
+                .splineTo(new Vector2d(38.93, -34.18), Math.toRadians(0.00))
+                .addTemporalMarker(() -> {
+                    armSystem.autonMoveArm();
+                })
+                .waitSeconds(2)
+                .lineToLinearHeading(new Pose2d(47.5, -33, Math.toRadians(0.00)))
+                .addTemporalMarker(() -> {
+                    armSystem.autonToggleBlock();
+                })
+                .waitSeconds(2)
+                .lineToConstantHeading(new Vector2d(40, -61.17))
+                .addTemporalMarker(() -> {
+                    armSystem.autonMoveArm();
+                    armSystem.autonToggleBlock();
+                })
+                .waitSeconds(2)
+                .splineTo(new Vector2d(58.50, -61), Math.toRadians(0.00))
+                .build();
+
+        TrajectorySequence right = drive.trajectorySequenceBuilder(new Pose2d(11.5, -63.10, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(21.00, -40.00, Math.toRadians(270.00)))
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(-.25);
+                })
+                .waitSeconds(2)
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(0);
+                })
+                .splineTo(new Vector2d(43.23, -42.19), Math.toRadians(0.00))
+                .addTemporalMarker(() -> {
+                    armSystem.autonMoveArm();
+                })
+                .waitSeconds(2)
+                .lineToConstantHeading(new Vector2d(47.5, -44))
+                .addTemporalMarker(() -> {
+                    armSystem.autonToggleBlock();
+                })
+                .waitSeconds(2)
+                .lineToConstantHeading(new Vector2d(40.38, -61.32))
+                .addTemporalMarker(() -> {
+                    armSystem.autonMoveArm();
+                    armSystem.autonToggleBlock();
+                })
+                .waitSeconds(2)
+                .splineTo(new Vector2d(58.21, -59.69), Math.toRadians(0.00))
+                .build();
+
         phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
             @Override
             public void onOpened() {
                 phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
             }
+
             @Override
-            public void onError(int errorCode) {} });
+            public void onError(int errorCode) {
+            }
+        });
+
         sleep(sleepTime);
-        String sideSelect = "RSR";
-        telemetry.clearAll();
-        telemetry.addData("Program running: ", sideSelect);
-        telemetry.update();
 
-        waitForStart();
-
-        String pos = detector.getPosition();
-        //neeeds to be dependent on pos on field
-
-        telemetry.addData("Position: ", pos);
-        telemetry.update();
-
-        // close OpenCV camera
+        String position = detector.getPosition();
+        sleep(sleepTime/4 );
+        if (position.equals("Center")) {
+            fullAuton = center;
+        } else if (position.equals("Right")) {
+            fullAuton = right;
+        }
         phoneCam.stopStreaming();
         phoneCam.stopRecordingPipeline();
         phoneCam.closeCameraDevice();
 
+        waitForStart();
+
+        drive.setPoseEstimate(fullAuton.start());
+        drive.followTrajectorySequence(fullAuton);
+
+        // defaults to middle bc that works the most consistently
 
 
-        //code that runs
-        while (opModeIsActive()) {
-
-            //add in movements to here
-
-
-
-            //sleep entire auto
-            sleep(30000);
+        while (!isStopRequested() && opModeIsActive()) {
 
         }
 
     }
-    //Controls
-    public void DriveForward(double power, int time) {
-        mecanumDrive.frontLeft.setPower(-power);  //top left when rev is down and ducky wheel is right
-        mecanumDrive.frontRight.setPower(power); //bottom left
-        mecanumDrive.backLeft.setPower(-power);   //top right
-        mecanumDrive.backRight.setPower(power); // bottom right
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
 
-    public void DriveBackward(double power, int time) {
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
 
-    public void StrafeRight(double power, int time) {
-        mecanumDrive.frontLeft.setPower(-power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
+    /* flipped drop side left
+    fullAuton = drive.trajectorySequenceBuilder(new Pose2d(11.20, 61.92, Math.toRadians(90)))
+        .lineToLinearHeading(new Pose2d(13.72, 34.48, Math.toRadians(360.00)))
+        .splineTo(new Vector2d(38.93, 34.18), Math.toRadians(360.00))
+        .splineTo(new Vector2d(51.68, 30.18), Math.toRadians(357.95))
+        .lineToConstantHeading(new Vector2d(45.45, 61.17))
+        .splineTo(new Vector2d(59.39, 61.92), Math.toRadians(0.00))
+        .build();
+    flipped drop side right
+    fullAuton = drive.trajectorySequenceBuilder(new Pose2d(11.20, 61.92, Math.toRadians(91.33)))
+        .lineToLinearHeading(new Pose2d(24.00, 40.00, Math.toRadians(90.00)))
+        .splineTo(new Vector2d(43.23, 42.19), Math.toRadians(360.00))
+        .lineToConstantHeading(new Vector2d(51.53, 41.45))
+        .lineToConstantHeading(new Vector2d(46.05, 60.73))
+        .splineTo(new Vector2d(58.21, 61.77), Math.toRadians(0.00))
+        .build();
 
-    public void StrafeLeft(double power, int time) {
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(power);
-        mecanumDrive.backLeft.setPower(-power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void DiagonalLeft(double power, int time){
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void DiagonalRight(double power, int time){
-        mecanumDrive.frontLeft.setPower(-power);
-        mecanumDrive.frontRight.setPower(power);
-        mecanumDrive.backLeft.setPower(-power);
-        mecanumDrive.backRight.setPower(power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void TurnLeft(double power, int time) {
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(-power);
-        mecanumDrive.backRight.setPower(power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void TurnRight(double power, int time) {
-        mecanumDrive.frontLeft.setPower(-power);
-        mecanumDrive.frontRight.setPower(power);
-        mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
+     */
 
     public void Intake(double power, int time) {
         intakeSystem.IntakeMotor.setPower(power);

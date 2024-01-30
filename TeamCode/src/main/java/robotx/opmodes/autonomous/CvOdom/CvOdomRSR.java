@@ -176,7 +176,9 @@ public class CvOdomRSR extends LinearOpMode {
             public void onError(int errorCode) {
             }
         });
+
         sleep(sleepTime);
+
         String position = detector.getPosition();
         sleep(sleepTime/4 );
         if (position.equals("Center")) {

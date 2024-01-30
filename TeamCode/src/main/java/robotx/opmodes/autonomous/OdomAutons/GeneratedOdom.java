@@ -14,7 +14,6 @@ import robotx.modules.LiftMotors;
 
 //import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-
 @Autonomous(name = "GeneratedOdom", group = "Default")
 
 public class GeneratedOdom extends LinearOpMode {
