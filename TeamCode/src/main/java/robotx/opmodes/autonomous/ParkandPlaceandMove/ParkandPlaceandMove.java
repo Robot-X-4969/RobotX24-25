@@ -148,11 +148,17 @@ public class ParkandPlaceandMove extends LinearOpMode {
                     sleep(1000);
                     break;
                 case "RSL":
-                    //autonMethods.StrafeRight(-0.5,1100);
+                    autonMethods.StrafeRight(-0.5);
+                    sleep(1100);
+                    autonMethods.DriveStop();
                     sleep(1100);
                     autonMethods.DriveStop();
                     sleep(50);
-                    //UnderBar(0.5,2250);
+                    autonMethods.DriveForward(0.5);
+                    sleep(1500);
+                    autonMethods.ArmUp();
+                    sleep(750);
+                    autonMethods.DriveStop();
                     sleep(10);
                     autonMethods.Release();
                     sleep(510);
@@ -180,60 +186,66 @@ public class ParkandPlaceandMove extends LinearOpMode {
                     sleep(3000);
                     autonMethods.DriveStop();
                     sleep(50);
-                    UnderBar(0.5, 250);
+                    autonMethods.DriveForward(0.5);
+                    sleep(1500);
+                    autonMethods.ArmUp();
+                    sleep(750);
+                    autonMethods.DriveStop();
                     sleep(10);
-                    Release(500);
-                    sleep(510);
-                    DriveBackward(0.5, 200);
-                    sleep(10);
-                    StrafeLeft(0.5, 1200);
-                    sleep(10);
-                    ArmRest();
+                    autonMethods.Release();
                     sleep(500);
-                    DriveForward(0.5, 500);
+                    autonMethods.Close();
+                    sleep(10);
+                    autonMethods.DriveBackward(0.5);
+                    sleep(200);
+                    autonMethods.DriveStop();
+                    sleep(10);
+                    autonMethods.StrafeLeft(0.5);
+                    sleep(1200);
+                    autonMethods.DriveStop();
+                    sleep(10);
+                    autonMethods.ArmRest();
+                    sleep(500);
+                    autonMethods.DriveForward(0.5);
+                    sleep(500);
+                    autonMethods.DriveStop();
                     sleep(1000);
                     break;
                 case "BSL":
                     telemetry.addData("current run", sideSelect);
                     telemetry.update();
                     sleep(100);
-                    StrafeRight(0.5, 1200);
+                    autonMethods.StrafeRight(0.5);
+                    sleep(1200);
+                    autonMethods.DriveStop();
                     sleep(50);
-                    ArmUp();
-                    DriveForward(0.5, 2000);
+                    autonMethods.ArmUp();
+                    autonMethods.DriveForward(0.5);
+                    sleep(2000);
+                    autonMethods.DriveStop();
                     sleep(50);
-                    Release(500);
-                    sleep(510);
-                    DriveBackward(0.5, 200);
-                    sleep(10);
-                    StrafeLeft(-0.5, 1200);
-                    sleep(10);
-                    ArmRest();
+                    autonMethods.Release();
                     sleep(500);
-                    DriveForward(0.5, 500);
+                    autonMethods.Close();
+                    sleep(10);
+                    autonMethods.DriveBackward(0.5);
+                    sleep(200);
+                    autonMethods.DriveStop();
+                    sleep(10);
+                    autonMethods.StrafeLeft(-0.5);
+                    sleep(1200);
+                    autonMethods.DriveStop();
+                    sleep(10);
+                    autonMethods.ArmRest();
+                    sleep(500);
+                    autonMethods.DriveForward(0.5);
+                    sleep(500);
+                    autonMethods.DriveStop();
                     sleep(1000);
                     break;
             }
             //sleep until the end
             sleep(30000);
-
         }
-    }
-
-    public void UnderBar(double power, int time) {
-        if (time < 1500) {
-            time = 1500;
-        }
-        mecanumDrive.frontLeft.setPower(-power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(-power);
-        mecanumDrive.backRight.setPower(power);
-        sleep(1500);
-        ArmUp();
-        sleep(time - 15 - 00);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
     }
 }
