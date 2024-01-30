@@ -1,7 +1,6 @@
 package robotx.opmodes.autonomous.ParkandPlaceandMove;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -9,16 +8,31 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import robotx.modules.AutonMethods;
 
-@Disabled
 
-@Autonomous(name = "ParkandPlaceandMoveRSR", group = "ParkandPlaceandMove")
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-public class ParkandPlaceandMoveRSR extends LinearOpMode {
+import robotx.modules.ArmSystem;
+import robotx.modules.IntakeSystem;
+import robotx.modules.LiftMotors;
+import robotx.modules.MecanumDrive;
+import robotx.modules.OrientationDrive;
+
+@Autonomous(name = "ParkandPlaceandMove", group = "ParkandPlaceandMove")
+
+public class ParkandPlaceandMove extends LinearOpMode {
 
     //private ElapsedTime runtime = new ElapsedTime();
 
     //Modules being imported
     AutonMethods autonMethods;
+
+    //Modules being imported
+    MecanumDrive mecanumDrive;
+    OrientationDrive orientationDrive;
+    //OdomSystem odomSystem;
+    ArmSystem armSystem;
+    LiftMotors liftMotors;
+    IntakeSystem intakeSystem;
 
     @Override
 
@@ -28,13 +42,36 @@ public class ParkandPlaceandMoveRSR extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        autonMethods = new AutonMethods(this);
-        autonMethods.init();
+        mecanumDrive = new MecanumDrive(this);
+        mecanumDrive.init();
 
-        autonMethods.start();
+        orientationDrive = new OrientationDrive(this);
+        orientationDrive.init();
 
-        telemetry.addData(">", "Press Play to Start Op Mode");
-        telemetry.update();
+        //odomSystem = new OdomSystem(this);
+        //odomSystem.init();
+
+        armSystem = new ArmSystem(this);
+        armSystem.init();
+
+        intakeSystem = new IntakeSystem(this);
+        intakeSystem.init();
+
+        liftMotors = new LiftMotors(this);
+        liftMotors.init();
+
+        //odomSystem.start();
+        mecanumDrive.start();
+        orientationDrive.start();
+        armSystem.start();
+        intakeSystem.start();
+        liftMotors.start();
+
+        mecanumDrive.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mecanumDrive.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mecanumDrive.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mecanumDrive.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
@@ -44,20 +81,20 @@ public class ParkandPlaceandMoveRSR extends LinearOpMode {
         telemetry.addData("Info", "\n a:RSR \n b:RSL \n x:BSR \n y:BSL \n ");
         telemetry.update();
 
-        while (!programSelected){
-            if (gamepad1.a){
+        while (!programSelected) {
+            if (gamepad1.a) {
                 sideSelect = "RSR";
                 programSelected = true;
             }
-            if (gamepad1.b){
+            if (gamepad1.b) {
                 sideSelect = "RSL";
                 programSelected = true;
             }
-            if (gamepad1.x){
+            if (gamepad1.x) {
                 sideSelect = "BSR";
                 programSelected = true;
             }
-            if (gamepad1.y){
+            if (gamepad1.y) {
                 sideSelect = "BSL";
                 programSelected = true;
             }
@@ -80,7 +117,7 @@ public class ParkandPlaceandMoveRSR extends LinearOpMode {
             // 13V goal, 13.5V max, 12.65 min
             telemetry.addData("current run", sideSelect);
             telemetry.update();
-            switch (sideSelect){
+            switch (sideSelect) {
                 case "RSR":
                     sleep(100);
                     autonMethods.StrafeRight(-0.5);
@@ -110,7 +147,7 @@ public class ParkandPlaceandMoveRSR extends LinearOpMode {
                     autonMethods.DriveStop();
                     sleep(1000);
                     break;
-                case "RSL" :
+                case "RSL":
                     //autonMethods.StrafeRight(-0.5,1100);
                     sleep(1100);
                     autonMethods.DriveStop();
@@ -135,16 +172,68 @@ public class ParkandPlaceandMoveRSR extends LinearOpMode {
                     autonMethods.DriveStop();
                     sleep(1000);
                     break;
-                case "BSL" :
-
+                case "BSR":
+                    telemetry.addData("current run", sideSelect);
+                    telemetry.update();
+                    sleep(100);
+                    autonMethods.StrafeRight(0.25);
+                    sleep(3000);
+                    autonMethods.DriveStop();
+                    sleep(50);
+                    UnderBar(0.5, 250);
+                    sleep(10);
+                    Release(500);
+                    sleep(510);
+                    DriveBackward(0.5, 200);
+                    sleep(10);
+                    StrafeLeft(0.5, 1200);
+                    sleep(10);
+                    ArmRest();
+                    sleep(500);
+                    DriveForward(0.5, 500);
+                    sleep(1000);
                     break;
-                case "BSR" :
-
+                case "BSL":
+                    telemetry.addData("current run", sideSelect);
+                    telemetry.update();
+                    sleep(100);
+                    StrafeRight(0.5, 1200);
+                    sleep(50);
+                    ArmUp();
+                    DriveForward(0.5, 2000);
+                    sleep(50);
+                    Release(500);
+                    sleep(510);
+                    DriveBackward(0.5, 200);
+                    sleep(10);
+                    StrafeLeft(-0.5, 1200);
+                    sleep(10);
+                    ArmRest();
+                    sleep(500);
+                    DriveForward(0.5, 500);
+                    sleep(1000);
                     break;
             }
             //sleep until the end
             sleep(30000);
 
         }
+    }
+
+    public void UnderBar(double power, int time) {
+        if (time < 1500) {
+            time = 1500;
+        }
+        mecanumDrive.frontLeft.setPower(-power);
+        mecanumDrive.frontRight.setPower(-power);
+        mecanumDrive.backLeft.setPower(-power);
+        mecanumDrive.backRight.setPower(power);
+        sleep(1500);
+        ArmUp();
+        sleep(time - 15 - 00);
+        mecanumDrive.frontLeft.setPower(0);
+        mecanumDrive.frontRight.setPower(0);
+        mecanumDrive.backLeft.setPower(0);
+        mecanumDrive.backRight.setPower(0);
     }
 }

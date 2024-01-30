@@ -1,6 +1,7 @@
 package robotx.opmodes.autonomous.ParkEverywhere;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -8,6 +9,8 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import robotx.modules.MecanumDrive;
 import robotx.modules.OrientationDrive;
+
+@Disabled
 
 @Autonomous(name = "ParkRSR", group = "ParkEverywhere")
 
