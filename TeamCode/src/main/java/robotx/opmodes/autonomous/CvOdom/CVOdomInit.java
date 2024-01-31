@@ -37,7 +37,7 @@ import robotx.modules.OrientationDrive;
 import org.firstinspires.ftc.teamcode.drive.*;
 import org.firstinspires.ftc.teamcode.util.trajectorysequence.*;
 
-@Autonomous(name = "CvOdomRSR", group = "CvOdom")
+@Autonomous(name = "CvOdomInit", group = "CvOdom")
 public class CVOdomInit extends LinearOpMode {
 
     OpenCvWebcam phoneCam;

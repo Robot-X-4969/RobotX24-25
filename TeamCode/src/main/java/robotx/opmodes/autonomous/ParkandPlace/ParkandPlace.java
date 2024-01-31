@@ -12,7 +12,7 @@ import robotx.modules.LiftMotors;
 import robotx.modules.MecanumDrive;
 import robotx.modules.OrientationDrive;
 
-@Autonomous(name = "ParkandPlaceRSR", group = "ParkandPlace")
+@Autonomous(name = "ParkandPlace", group = "ParkandPlace")
 
 public class ParkandPlace extends LinearOpMode {
 

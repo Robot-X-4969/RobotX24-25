@@ -41,7 +41,7 @@ import org.firstinspires.ftc.teamcode.util.trajectorysequence.*;
 public class CvOdomBSR extends LinearOpMode {
 
     OpenCvWebcam phoneCam;
-    ArmSystem armSystem;
+    //ArmSystem armSystem;
     IntakeSystem intakeSystem;
     LiftMotors liftMotors;
 
@@ -49,8 +49,8 @@ public class CvOdomBSR extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        armSystem = new ArmSystem(this);
-        armSystem.init();
+        //armSystem = new ArmSystem(this);
+        //armSystem.init();
 
         intakeSystem = new IntakeSystem(this);
         intakeSystem.init();
@@ -58,7 +58,7 @@ public class CvOdomBSR extends LinearOpMode {
         liftMotors = new LiftMotors(this);
         liftMotors.init();
 
-        armSystem.start();
+        //armSystem.start();
         intakeSystem.start();
         liftMotors.start();
 
@@ -77,7 +77,7 @@ public class CvOdomBSR extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         // generated
         TrajectorySequence center = drive.trajectorySequenceBuilder(new Pose2d(-36, 63.1, Math.toRadians(90)))
-                .lineToConstantHeading(new Vector2d(-34.18, 33.44))
+                .lineToLinearHeading(new Pose2d(-36, 38, Math.toRadians(90)))
                 .addTemporalMarker(() -> {
                     intakeSystem.IntakeMotor.setPower(-.25);
                 })
@@ -85,32 +85,33 @@ public class CvOdomBSR extends LinearOpMode {
                 .addTemporalMarker(() -> {
                     intakeSystem.IntakeMotor.setPower(0);
                 })
-
-                .splineTo(new Vector2d(-31.96, 11.79), Math.toRadians(0))
-                .splineTo(new Vector2d(23.51, 13.12), Math.toRadians(0))
+                .lineToLinearHeading(new Pose2d(-52,39, Math.toRadians(0)))
+                .lineToConstantHeading(new Vector2d(-52,13))
+                .lineToConstantHeading(new Vector2d(-31.96, 13))
+                .splineToConstantHeading(new Vector2d(23.51, 13), Math.toRadians(0))
                 .addTemporalMarker(() -> {
-                    armSystem.autonMoveArm();
+                    //armSystem.autonMoveArm();
                 })
                 .waitSeconds(2)
-                .splineToConstantHeading(new Vector2d(48, 36.11), Math.toRadians(0))
+                .lineToLinearHeading(new Pose2d(45.5, 27.5, Math.toRadians(0)))
                 .addTemporalMarker(() -> {
-                    armSystem.autonToggleBlock();
+                    //armSystem.autonToggleBlock();
                 })
                 .waitSeconds(2)
-                .lineToConstantHeading(new Vector2d(41.89, 10.46))
+                .lineToLinearHeading(new Pose2d(41.89, 9, Math.toRadians(-10)))
                 .addTemporalMarker(() -> {
-                    armSystem.autonMoveArm();
-                    armSystem.autonToggleBlock();
+                    //armSystem.autonMoveArm();
+                    //armSystem.autonToggleBlock();
                 })
                 .waitSeconds(2)
-                .splineTo(new Vector2d(62.51, 11.79), Math.toRadians(0.00))
+                .splineTo(new Vector2d(50, 8), Math.toRadians(-10.00))
                 .build();
 
         //sets new pose2d for each pixel drop location
 
         // right (generated)
         TrajectorySequence fullAuton = drive.trajectorySequenceBuilder(new Pose2d(-36.00, 63.1, Math.toRadians(90.00)))
-                .lineToSplineHeading(new Pose2d(-38.00, 34.48, Math.toRadians(0.00)))
+                .lineToSplineHeading(new Pose2d(-39.00, 34.48, Math.toRadians(0.00)))
                 .addTemporalMarker(() -> {
                     intakeSystem.IntakeMotor.setPower(-.25);
                 })
@@ -118,21 +119,21 @@ public class CvOdomBSR extends LinearOpMode {
                 .addTemporalMarker(() -> {
                     intakeSystem.IntakeMotor.setPower(0);
                 })
-                .lineToConstantHeading(new Vector2d(-35.00, 10.16))
-                .splineTo(new Vector2d(23.51, 13.12), Math.toRadians(0))
+                .lineToConstantHeading(new Vector2d(-38.00, 10.46))
+                .lineToConstantHeading(new Vector2d(23.51, 13.12))
                 .addTemporalMarker(() -> {
-                    armSystem.autonMoveArm();
+                    //armSystem.autonMoveArm();
                 })
                 .waitSeconds(2)
                 .splineToConstantHeading(new Vector2d(47.50, 33), Math.toRadians(0))
                 .addTemporalMarker(() -> {
-                    armSystem.autonToggleBlock();
+                    //armSystem.autonToggleBlock();
                 })
                 .waitSeconds(2)
                 .lineToConstantHeading(new Vector2d(41.89, 10.46))
                 .addTemporalMarker(() -> {
-                    armSystem.autonMoveArm();
-                    armSystem.autonToggleBlock();
+                    //armSystem.autonMoveArm();
+                    //armSystem.autonToggleBlock();
                 })
                 .waitSeconds(2)
                 .splineTo(new Vector2d(62.51, 11.79), Math.toRadians(0.00))
@@ -140,8 +141,8 @@ public class CvOdomBSR extends LinearOpMode {
 
         // generated
         TrajectorySequence left = drive.trajectorySequenceBuilder(new Pose2d(-36, 63.10, Math.toRadians(90)))
-                .lineToSplineHeading(new Pose2d(-44.42, 33.15, Math.toRadians(0.00)))
-                .lineToConstantHeading(new Vector2d(-34.00, 33.00))
+                .lineToLinearHeading(new Pose2d(-44.42, 33.15, Math.toRadians(180.00)))
+                .lineToConstantHeading(new Vector2d(-37.00, 33.00))
                 .addTemporalMarker(() -> {
                     intakeSystem.IntakeMotor.setPower(-.25);
                 })
@@ -149,24 +150,24 @@ public class CvOdomBSR extends LinearOpMode {
                 .addTemporalMarker(() -> {
                     intakeSystem.IntakeMotor.setPower(0);
                 })
-                .splineTo(new Vector2d(-25.14, 10.90), Math.toRadians(0.00))
+                .splineTo(new Vector2d(-25.14, 12), Math.toRadians(0.00))
                 .splineTo(new Vector2d(23.51, 13.12), Math.toRadians(0))
                 .addTemporalMarker(() -> {
-                    armSystem.autonMoveArm();
+                    //armSystem.autonMoveArm();
                 })
                 .waitSeconds(2)
-                .splineToConstantHeading(new Vector2d(47.50, 44), Math.toRadians(0))
+                .lineToConstantHeading(new Vector2d(45, 43))
                 .addTemporalMarker(() -> {
-                    armSystem.autonToggleBlock();
+                    //armSystem.autonToggleBlock();
                 })
                 .waitSeconds(2)
-                .lineToConstantHeading(new Vector2d(41.89, 10.46))
+                .lineToConstantHeading(new Vector2d(38, 14))
                 .addTemporalMarker(() -> {
-                    armSystem.autonMoveArm();
-                    armSystem.autonToggleBlock();
+                    //armSystem.autonMoveArm();
+                    //armSystem.autonToggleBlock();
                 })
                 .waitSeconds(2)
-                .splineTo(new Vector2d(62.51, 11.79), Math.toRadians(0.00))
+                .splineTo(new Vector2d(57, 14), Math.toRadians(0.00))
                 .build();
 
 
@@ -185,6 +186,9 @@ public class CvOdomBSR extends LinearOpMode {
         sleep(sleepTime);
         String position = detector.getPosition();
         sleep(sleepTime/4 );
+        // JUST FOR TESTING TAKE OUT
+        position = "Right";
+        // ^^^^^^^^^^^^^^
         if (position.equals("Center")) {
             fullAuton = center;
         } else if (position.equals("Left")) {
@@ -231,75 +235,6 @@ public class CvOdomBSR extends LinearOpMode {
 
 
 
-
-    public void Intake(double power, int time) {
-        intakeSystem.IntakeMotor.setPower(power);
-        sleep(time);
-        intakeSystem.IntakeMotor.setPower(0);
-    }
-
-    public void Unintake(double power, int time) {
-        intakeSystem.IntakeMotor.setPower(-power);
-        sleep(time);
-        intakeSystem.IntakeMotor.setPower(0);
-    }
-
-    public void FirstLift() {
-        double liftPower = 1;
-        int liftTime = 100;
-        liftMotors.LeftLift.setPower(liftPower);
-        liftMotors.RightLift.setPower(-liftPower);
-        sleep(liftTime);
-        liftMotors.LeftLift.setPower(0);
-        liftMotors.RightLift.setPower(0);
-    }
-
-    public void RaiseLift(double power, int time) {
-        liftMotors.LeftLift.setPower(power);
-        liftMotors.RightLift.setPower(-power);
-        sleep(time);
-        liftMotors.LeftLift.setPower(0);
-        liftMotors.RightLift.setPower(0);
-    }
-
-    public void LowerLift(double power, int time) {
-        liftMotors.LeftLift.setPower(-power);
-        liftMotors.RightLift.setPower(power);
-        sleep(time);
-        liftMotors.LeftLift.setPower(0);
-        liftMotors.RightLift.setPower(0);
-    }
-
-    public void ArmRest () {
-        armSystem.leftWrist.setPosition(.175);
-        armSystem.rightWrist.setPosition(.925);
-        armSystem.leftArm.setPosition(.274);
-        armSystem.rightArm.setPosition(.712);
-    }
-
-    public void ArmUp () {
-        armSystem.leftWrist.setPosition((.5775));
-        armSystem.rightWrist.setPosition((.2525));
-        sleep(500);
-        armSystem.leftWrist.setPosition(.86);
-        armSystem.rightWrist.setPosition(.14);
-        armSystem.leftArm.setPosition(.522);
-        armSystem.rightArm.setPosition(0.55);
-    }
-
-    public void Release(int time) {
-        armSystem.blockServo.setPosition(.6);
-        sleep(time);
-        armSystem.blockServo.setPosition(.1);
-        sleep(time);
-    }
-
-    public void ScoreAPixel(int time){
-        ArmUp();
-        Release(time);
-        ArmRest();
-
-    }
 
     // special note for John - sleeps are to give the servos time to move
 
