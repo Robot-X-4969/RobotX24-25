@@ -3,6 +3,7 @@ package robotx.opmodes.autonomous.CvAuto;
 import android.util.Size;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -32,7 +33,10 @@ import robotx.modules.MecanumDrive;
 import robotx.modules.OdomSystem;
 import robotx.modules.OrientationDrive;
 
+@Disabled
+
 @Autonomous(name = "CvAprilRSL", group = "CvAuto")
+
 public class CvAutoRSL extends LinearOpMode {
 
     OpenCvWebcam phoneCam;

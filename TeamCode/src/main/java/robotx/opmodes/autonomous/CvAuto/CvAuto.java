@@ -30,18 +30,19 @@ import robotx.modules.ArmSystem;
 import robotx.modules.IntakeSystem;
 import robotx.modules.LiftMotors;
 import robotx.modules.MecanumDrive;
+import robotx.modules.OdomSystem;
 import robotx.modules.OrientationDrive;
 
 @Disabled
 
-@Autonomous(name = "CvAprilRSR", group = "CvAuto")
-
-public class CvAutoRSR extends LinearOpMode {
+@Autonomous(name = "CvAuto", group = "CvAuto")
+public class CvAuto extends LinearOpMode {
 
     OpenCvWebcam phoneCam;
     SkystoneDeterminationPipeline pipeline;
     MecanumDrive mecanumDrive;
     OrientationDrive orientationDrive;
+    OdomSystem odomSystem;
     ArmSystem armSystem;
     IntakeSystem intakeSystem;
     LiftMotors liftMotors;
@@ -58,6 +59,7 @@ public class CvAutoRSR extends LinearOpMode {
      */
     private VisionPortal visionPortal;
 
+
     @Override
     public void runOpMode() {
 
@@ -73,6 +75,9 @@ public class CvAutoRSR extends LinearOpMode {
         orientationDrive = new OrientationDrive(this);
         orientationDrive.init();
 
+        //odomSystem = new OdomSystem(this);
+        //odomSystem.init();
+
         armSystem = new ArmSystem(this);
         armSystem.init();
 
@@ -82,6 +87,7 @@ public class CvAutoRSR extends LinearOpMode {
         liftMotors = new LiftMotors(this);
         liftMotors.init();
 
+        //odomSystem.start();
         mecanumDrive.start();
         orientationDrive.start();
         armSystem.start();
@@ -122,17 +128,30 @@ public class CvAutoRSR extends LinearOpMode {
         // init pixelPos
         String pixelPos = "None";
 
-        Boolean programSelected = false;
-        String sideSelect = "";
-
-        telemetry.clearAll();
+        telemetry.addData("Info", "\n a:RSR \n b:RSL \n x:BSR \n y:BSL \n ");
         telemetry.update();
 
-        while (!programSelected){
+        boolean programSelected = false;
 
+        String sideSelect = null;
+
+        while (!programSelected) {
+            if (gamepad1.a) {
                 sideSelect = "RSR";
                 programSelected = true;
-
+            }
+            if (gamepad1.b) {
+                sideSelect = "RSL";
+                programSelected = true;
+            }
+            if (gamepad1.x) {
+                sideSelect = "BSR";
+                programSelected = true;
+            }
+            if (gamepad1.y) {
+                sideSelect = "BSL";
+                programSelected = true;
+            }
         }
 
         telemetry.clearAll();
@@ -163,85 +182,82 @@ public class CvAutoRSR extends LinearOpMode {
 
             // scanning will work for both sides, just need to change which way we are moving
             //scan middle
-
-                //scan outer (away from center)
-                switch (sideSelect) {
-                    case "RSR" :
-                    case "RSL" :
-                        for (int i = 0; i < 500; i++) {
-                            if (pipeline.getAnalysis1() > pipeline.getAnalysis2() + 15) {
-                                pixelPos = "Outer";
-                                break;
-                            }
-                            sleep(1);
-                        }
-                        break;
-                    case "BSR":
-                    case "BSL":
-                        for (int i = 0; i < 500; i++) {
-                            if (pipeline.getAnalysis2() > pipeline.getAnalysis1() + 15) {
-                                pixelPos = "Outer";
-                                break;
-                            }
-                            sleep(1);
-                        }
-                        break;
-                }
-
-                if(!pixelPos.equals("Right")) {
-
-                    // note need to change this movement / figure out where to move
-                    //strafe is not perfect
-
-
-                    switch (sideSelect) {
-                        case "RSR":
-                        case "BSL":
-                            StrafeLeft(.8,200);
-                            for (int i = 0; i < 500; i++) {
-                                if (pipeline.getAnalysis1() > pipeline.getAnalysis2() + 75) {
-                                    pixelPos = "Middle";
-                                    break;
-                                }
-                                sleep(5);
-                            }
+            switch (sideSelect) {
+                case "RSR" :
+                case "RSL" :
+                    for (int i = 0; i < 500; i++) {
+                        if (pipeline.getAnalysis1() > pipeline.getAnalysis2() + 75) {
+                            pixelPos = "Middle";
                             break;
-                        case "BSR":
-                        case "RSL":
-                            StrafeRight(.8,200);
-                            for (int i = 0; i < 500; i++) {
-                                if (pipeline.getAnalysis2() > pipeline.getAnalysis1() + 75) {
-                                    pixelPos = "Middle";
-                                    break;
-                                }
-                                sleep(5);
-                            }
-                            break;
+                        }
+                        sleep(5);
                     }
-                }
-
-            //then logically has to be the other option
-            if (pixelPos.equals("None")) {
-                pixelPos = "Inner";
+                    break;
+                case "BSR":
+                case "BSL":
+                    for (int i = 0; i < 500; i++) {
+                        if (pipeline.getAnalysis2() > pipeline.getAnalysis1() + 75) {
+                            pixelPos = "Middle";
+                            break;
+                        }
+                        sleep(5);
+                    }
+                    break;
             }
 
             /**
              * Need to test the value to move from one line to the other and if need to change camera view
-             *
              */
+            int timeBetweenLines = 150;
 
-            switch (pixelPos) {
-                case "Inner" :
-                    pixelPos = "Left";
+            switch (sideSelect){
+                case "RSR":
+
+                case "BSR":
+                    telemetry.addData("current run", sideSelect);
+                    telemetry.update();
+                    sleep(100);
+                    StrafeRight(0.8,timeBetweenLines);
+                    sleep(100);
                     break;
-                case "Middle" :
-                    pixelPos = "Center";
-                    break;
-                case "Outer" :
-                    pixelPos = "Right";
+                case "RSL":
+                case "BSL":
+                    telemetry.addData("current run", sideSelect);
+                    telemetry.update();
+                    sleep(100);
+                    StrafeLeft(0.8,timeBetweenLines);
+                    sleep(100);
                     break;
             }
 
+            //scan outer (away from center)
+            switch (sideSelect) {
+                case "RSR" :
+                case "RSL" :
+                    for (int i = 0; i < 500; i++) {
+                        if (pipeline.getAnalysis1() > pipeline.getAnalysis2() + 15) {
+                            pixelPos = "Right";
+                            break;
+                        }
+                        sleep(1);
+                    }
+                    break;
+                case "BSR":
+                case "BSL":
+                    for (int i = 0; i < 500; i++) {
+                        if (pipeline.getAnalysis2() > pipeline.getAnalysis1() + 15) {
+                            pixelPos = "Right";
+                            break;
+                        }
+                        sleep(1);
+                    }
+                    break;
+            }
+
+            //then logically has to be the other option
+            if (pixelPos.equals("None")) {
+                pixelPos = "Left";
+            }
 
             telemetry.addData("Position", pixelPos);
             telemetry.update();
@@ -251,23 +267,21 @@ public class CvAutoRSR extends LinearOpMode {
             phoneCam.stopRecordingPipeline();
             phoneCam.closeCameraDevice();
 
-            sleep(10000);
-
             //movements place a pixel and get robot to the board
+
             if (pixelPos.equals("Left")) {
                 //drive and drop off pixel
-                DriveBackward(0.5, 1200);
+                DriveBackward(0.5, 0);
                 sleep(sleepTime);
-                TurnLeft(0.5, 300);
+                TurnLeft(-0.5, 0);
                 sleep(sleepTime);
-                DriveBackward(0.5, 200);
+                DriveBackward(0.5, 0);
                 sleep(sleepTime);
-                DriveForward(0.5, 200);
+                DriveForward(0.5, 0);
                 sleep(sleepTime);
-                Unintake(0.7, 500);
+                Unintake(0.50, 0);
                 sleep(sleepTime);
-                ArmUp();
-                DriveForward(0.5, 800);
+                DriveForward(0.5, 0);
                 sleep(sleepTime);
 
             }
@@ -278,17 +292,17 @@ public class CvAutoRSR extends LinearOpMode {
                 sleep(sleepTime);
                 Unintake(0.5, 0);
                 sleep(sleepTime);
-                TurnLeft(0.5, 0);
+                TurnLeft(-0.5, 0);
                 sleep(sleepTime);
                 DriveForward(0.5, 0);
                 sleep(sleepTime);
             }
             if (pixelPos.equals("Right")) {
-                StrafeLeft(0.5, 0);
+                StrafeLeft(-0.5, 0);
                 sleep(sleepTime);
                 DriveBackward(0.5, 0);
                 sleep(sleepTime);
-                TurnLeft(0.5, 0);
+                TurnLeft(-0.5, 0);
                 sleep(sleepTime);
                 DriveBackward(0.5, 0);
                 sleep(sleepTime);
@@ -355,7 +369,7 @@ public class CvAutoRSR extends LinearOpMode {
                         telemetry.addData("Current april Tags Detection", detection.id);
                         telemetry.update();
                         break;
-                        }
+                    }
                     if (detection.id == 2 || detection.id == 5) {
                         // add in conditions for each
                         DetectionEval = 2;
@@ -520,9 +534,7 @@ public class CvAutoRSR extends LinearOpMode {
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(129, 180);
-        //129, 130 is right from pos
-
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(130, 150);
         //right side of object is even with inside of camera
 
         static final int REGION_WIDTH = 20;
