@@ -18,7 +18,7 @@ import robotx.modules.LiftMotors;
 
 @Disabled
 
-@Autonomous(name = "PureOdomMiddleMovements", group = "Default")
+@Autonomous(name = "PureOdomMiddleMovements", group = "")
 
 public class PureOdomMovements extends LinearOpMode {
 

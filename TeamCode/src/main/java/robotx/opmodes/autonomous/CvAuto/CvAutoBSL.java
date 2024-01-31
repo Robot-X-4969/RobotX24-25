@@ -3,6 +3,7 @@ package robotx.opmodes.autonomous.CvAuto;
 import android.util.Size;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -31,6 +32,8 @@ import robotx.modules.LiftMotors;
 import robotx.modules.MecanumDrive;
 import robotx.modules.OdomSystem;
 import robotx.modules.OrientationDrive;
+
+@Disabled
 
 @Autonomous(name = "CvAprilBSL", group = "CvAuto")
 public class CvAutoBSL extends LinearOpMode {
