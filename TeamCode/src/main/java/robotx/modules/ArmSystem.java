@@ -16,11 +16,11 @@ public class ArmSystem extends XModule {
     public Servo rightWrist;
     public Servo blockServo;
 
-    double rightArmPos = .735;
-    double leftArmPos = .245;
+    double rightArmPos = .363;
+    double leftArmPos = .67;
 
-    double rightWristPos = .925;
-    double leftWristPos = .175;
+    double rightWristPos = .79;
+    double leftWristPos = .20;
 
     long t;
 
@@ -29,31 +29,38 @@ public class ArmSystem extends XModule {
     boolean blocked = true;
 
 
-    int k = 0;
+    int k = 1;
     //methods are built into one button as a toggle
 
     public void moveArm() {
         if (k == 0) {
             //DOWN
-            leftWrist.setPosition(leftWristPos);
-            rightWrist.setPosition(rightWristPos);
             leftArm.setPosition(leftArmPos);
             rightArm.setPosition(rightArmPos);
+            leftWrist.setPosition(leftWristPos);
+            rightWrist.setPosition(rightWristPos);
+
             blockServo.setPosition(.6);
             k++;
         }
         else if (k == 1){
             leftWrist.setPosition((.98+leftWristPos)/2);
             rightWrist.setPosition((.02+rightWristPos)/2);
-            blockServo.setPosition(.6);
             k++;
         }
         else{
             //UP
-            leftWrist.setPosition(.99);
-            rightWrist.setPosition(.094);
+
+            leftWrist.setPosition(1.0);
+            rightWrist.setPosition(0.0);
+            leftArm.setPosition(0.482);
+            rightArm.setPosition(0.5);
+            /*
+            //old arm pos
             leftArm.setPosition(.517);
             rightArm.setPosition(0.537);
+             */
+
             blockServo.setPosition(.6);
             k=k-2;
         }
@@ -62,10 +69,10 @@ public class ArmSystem extends XModule {
     public void autonMoveArm() {
         //dont touch without asking cstaut pls
         if (armDown) {
-            leftArm.setPosition(0.48);
-            rightArm.setPosition(0.59);
-            leftWrist.setPosition(.87);
-            rightWrist.setPosition(.21);
+            leftArm.setPosition(0.56);
+            rightArm.setPosition(0.533);
+            leftWrist.setPosition(.907);
+            rightWrist.setPosition(.093);
             armDown = false;
         } else {
             leftArm.setPosition(leftArmPos);

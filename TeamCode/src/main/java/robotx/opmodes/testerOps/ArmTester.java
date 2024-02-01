@@ -72,10 +72,17 @@ public class ArmTester extends OpMode {
 
     @Override
     public void start() {
-        servoPosition1 = .99;
-        servoPosition2 = .094;
-        servoPosition3 = .48;
-        servoPosition4 = .46;
+        /*
+        // down positions
+        servoPosition1 = .20;
+        servoPosition2 = .79;
+        servoPosition3 = .67;
+        servoPosition4 = .363;
+         */
+        servoPosition1 = .907;
+        servoPosition2 = .093;
+        servoPosition3 = .540;
+        servoPosition4 = .553;
     }
 
     @Override

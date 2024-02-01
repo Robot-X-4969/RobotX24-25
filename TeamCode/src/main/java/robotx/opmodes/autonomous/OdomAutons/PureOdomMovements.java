@@ -175,10 +175,10 @@ public class PureOdomMovements extends LinearOpMode {
             fullAuton = RSR;
         }
         if (sideSelect.equals("BSR")){
-            fullAuton = BSR;
+            //fullAuton = BSR;
         }
         if (sideSelect.equals("RSL")){
-            fullAuton = RSL;
+            //fullAuton = RSL;
         }
         if (sideSelect.equals("BSL")){
             fullAuton = BSL;
