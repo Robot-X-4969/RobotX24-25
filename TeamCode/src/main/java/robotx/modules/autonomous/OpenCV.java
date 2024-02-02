@@ -1,4 +1,4 @@
-package robotx.modules;
+package robotx.modules.autonomous;
 
 import android.location.Location;
 

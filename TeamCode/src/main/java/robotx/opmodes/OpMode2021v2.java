@@ -3,12 +3,12 @@ package robotx.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import robotx.libraries.XOpMode;
-import robotx.modules.ArmSystem;
-import robotx.modules.DroneLaunch;
-import robotx.modules.GrapplingHook;
-import robotx.modules.IntakeSystem;
-import robotx.modules.LiftMotors;
-import robotx.modules.OrientationDrive;
+import robotx.modules.opmode.ArmSystem;
+import robotx.modules.opmode.DroneLaunch;
+import robotx.modules.opmode.GrapplingHook;
+import robotx.modules.opmode.IntakeSystem;
+import robotx.modules.opmode.LiftMotors;
+import robotx.modules.opmode.OrientationDrive;
 
 @TeleOp(name = "OpMode 23-24", group = "CurrentOp")
 public class OpMode2021v2 extends XOpMode {

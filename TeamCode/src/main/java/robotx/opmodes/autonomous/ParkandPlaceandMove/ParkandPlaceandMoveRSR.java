@@ -3,11 +3,10 @@ package robotx.opmodes.autonomous.ParkandPlaceandMove;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-import robotx.modules.AutonMethods;
+import robotx.modules.autonomous.AutonMethods;
 
 @Disabled
 

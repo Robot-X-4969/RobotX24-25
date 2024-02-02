@@ -7,11 +7,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-import robotx.modules.ArmSystem;
-import robotx.modules.IntakeSystem;
-import robotx.modules.LiftMotors;
-import robotx.modules.MecanumDrive;
-import robotx.modules.OrientationDrive;
+import robotx.modules.opmode.ArmSystem;
+import robotx.modules.opmode.IntakeSystem;
+import robotx.modules.opmode.LiftMotors;
+import robotx.modules.autonomous.MecanumDrive;
+import robotx.modules.opmode.OrientationDrive;
 
 @Disabled
 

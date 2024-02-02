@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-import robotx.modules.MecanumDrive;
-import robotx.modules.OrientationDrive;
+import robotx.modules.autonomous.MecanumDrive;
+import robotx.modules.opmode.OrientationDrive;
 
 @Autonomous(name = "ParkEverywhere", group = "ParkEverywhere")
 
