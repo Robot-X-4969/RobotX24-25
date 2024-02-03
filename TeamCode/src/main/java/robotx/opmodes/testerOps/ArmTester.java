@@ -66,7 +66,7 @@ public class ArmTester extends OpMode {
         //testServo11.setDirection(Servo.Direction.REVERSE);
         //testServo12.setDirection(Servo.Direction.REVERSE);
         testServo3.setDirection(Servo.Direction.REVERSE);
-        testServo4.setDirection(Servo.Direction.REVERSE);
+        //testServo4.setDirection(Servo.Direction.REVERSE);
 
     }
 
@@ -79,10 +79,10 @@ public class ArmTester extends OpMode {
         servoPosition3 = .67;
         servoPosition4 = .363;
          */
-        servoPosition1 = .907;
-        servoPosition2 = .093;
-        servoPosition3 = .540;
-        servoPosition4 = .553;
+        servoPosition1 = .175;
+        servoPosition2 = 0.925;
+        servoPosition3 = .274;
+        servoPosition4 = .712;
     }
 
     @Override

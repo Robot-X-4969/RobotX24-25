@@ -77,7 +77,7 @@ public class CvOdomBSL extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         TrajectorySequence center = drive.trajectorySequenceBuilder(new Pose2d(11.5, 63.10, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(11.5, 37, Math.toRadians(90))) //pixel on ground
+                .lineToLinearHeading(new Pose2d(11.5, 39, Math.toRadians(90))) //pixel on ground
                 .addTemporalMarker(() -> {
                     intakeSystem.IntakeMotor.setPower(-.25);
                 })
@@ -91,7 +91,7 @@ public class CvOdomBSL extends LinearOpMode {
                     armSystem.autonMoveArm();
                 })
                 .waitSeconds(2)
-                .lineToLinearHeading(new Pose2d(45.5, 36, Math.toRadians(0.00))) //drop on board
+                .lineToLinearHeading(new Pose2d(47.5, 36, Math.toRadians(0.00))) //drop on board
                 .addTemporalMarker(() -> {
                     armSystem.autonToggleBlock();
                 })
@@ -122,7 +122,7 @@ public class CvOdomBSL extends LinearOpMode {
                     armSystem.autonMoveArm();
                 })
                 .waitSeconds(2)
-                .lineToLinearHeading(new Pose2d(45.5, 23, Math.toRadians(0.00))) //drop on board
+                .lineToLinearHeading(new Pose2d(47.5, 23, Math.toRadians(0.00))) //drop on board
                 .addTemporalMarker(() -> {
                     armSystem.autonToggleBlock();
                 })
@@ -150,7 +150,7 @@ public class CvOdomBSL extends LinearOpMode {
                     armSystem.autonMoveArm();
                 })
                 .waitSeconds(2)
-                .lineToConstantHeading(new Vector2d(45.5, 41.45)) //drop on board
+                .lineToConstantHeading(new Vector2d(47.5, 41.45)) //drop on board
                 .addTemporalMarker(() -> {
                     armSystem.autonToggleBlock();
                 })

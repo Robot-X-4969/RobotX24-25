@@ -16,11 +16,11 @@ public class ArmSystem extends XModule {
     public Servo rightWrist;
     public Servo blockServo;
 
-    double rightArmPos = .363;
-    double leftArmPos = .67;
+    double rightArmPos = .712;
+    double leftArmPos = .274;
 
-    double rightWristPos = .79;
-    double leftWristPos = .20;
+    double rightWristPos = .925;
+    double leftWristPos = .175;
 
     long t;
 
@@ -50,16 +50,11 @@ public class ArmSystem extends XModule {
         }
         else{
             //UP
-
             leftWrist.setPosition(1.0);
-            rightWrist.setPosition(0.0);
-            leftArm.setPosition(0.482);
-            rightArm.setPosition(0.5);
-            /*
-            //old arm pos
+            rightWrist.setPosition(0.10);
             leftArm.setPosition(.517);
             rightArm.setPosition(0.537);
-             */
+
 
             blockServo.setPosition(.6);
             k=k-2;
@@ -69,10 +64,10 @@ public class ArmSystem extends XModule {
     public void autonMoveArm() {
         //dont touch without asking cstaut pls
         if (armDown) {
-            leftArm.setPosition(0.56);
-            rightArm.setPosition(0.533);
-            leftWrist.setPosition(.907);
-            rightWrist.setPosition(.093);
+            leftArm.setPosition(0.48);
+            rightArm.setPosition(0.59);
+            leftWrist.setPosition(.87);
+            rightWrist.setPosition(.21);
             armDown = false;
         } else {
             leftArm.setPosition(leftArmPos);
@@ -123,7 +118,7 @@ public class ArmSystem extends XModule {
         blockServo = opMode.hardwareMap.servo.get("blockServo");
 
         leftArm.setDirection(Servo.Direction.REVERSE);
-        rightArm.setDirection(Servo.Direction.REVERSE);
+        //rightArm.setDirection(Servo.Direction.REVERSE);
 
         leftWrist.setPosition(leftWristPos);
         rightWrist.setPosition(rightWristPos);

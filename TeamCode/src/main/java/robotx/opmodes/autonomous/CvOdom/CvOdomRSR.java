@@ -149,7 +149,7 @@ public class CvOdomRSR extends LinearOpMode {
                     armSystem.autonMoveArm();
                 })
                 .waitSeconds(2)
-                .lineToConstantHeading(new Vector2d(47.5, -44))
+                .lineToConstantHeading(new Vector2d(48, -44))
                 .addTemporalMarker(() -> {
                     armSystem.autonToggleBlock();
                 })
