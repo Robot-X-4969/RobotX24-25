@@ -1,15 +1,15 @@
-package robotx.opmodes;
+package robotx.opmodes.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import robotx.modules.ArmSystem;
-import robotx.modules.IntakeSystem;
-import robotx.modules.LiftMotors;
-import robotx.modules.MecanumDrive;
-import robotx.modules.OdomSystem;
-import robotx.modules.OrientationDrive;
+import robotx.modules.opmode.ArmSystem;
+import robotx.modules.opmode.IntakeSystem;
+import robotx.modules.opmode.LiftMotors;
+import robotx.modules.autonomous.MecanumDrive;
+import robotx.modules.autonomous.OdomSystem;
+import robotx.modules.opmode.OrientationDrive;
 
  @Autonomous(name = "MainAutonRight", group = "Default")
  

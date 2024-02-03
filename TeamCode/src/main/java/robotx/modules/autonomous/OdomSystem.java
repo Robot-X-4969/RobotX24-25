@@ -1,4 +1,4 @@
-package robotx.modules;
+package robotx.modules.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DigitalChannel;

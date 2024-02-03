@@ -9,9 +9,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.util.trajectorysequence.TrajectorySequence;
 
-import robotx.modules.ArmSystem;
-import robotx.modules.IntakeSystem;
-import robotx.modules.LiftMotors;
+import robotx.modules.opmode.ArmSystem;
+import robotx.modules.opmode.IntakeSystem;
+import robotx.modules.opmode.LiftMotors;
 
 //import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 

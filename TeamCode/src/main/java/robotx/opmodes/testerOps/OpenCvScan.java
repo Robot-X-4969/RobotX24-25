@@ -17,10 +17,10 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-import robotx.modules.LiftMotors;
-import robotx.modules.MecanumDrive;
-import robotx.modules.OdomSystem;
-import robotx.modules.OrientationDrive;
+import robotx.modules.opmode.LiftMotors;
+import robotx.modules.autonomous.MecanumDrive;
+import robotx.modules.autonomous.OdomSystem;
+import robotx.modules.opmode.OrientationDrive;
 
 @TeleOp(name = "OpenCvScan", group = "Default")
 public class OpenCvScan extends LinearOpMode {

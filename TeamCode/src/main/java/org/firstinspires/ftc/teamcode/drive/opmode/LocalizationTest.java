@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
-import robotx.modules.OdomSystem;
+import robotx.modules.autonomous.OdomSystem;
 
 /**
  * This is a simple teleop routine for testing localization. Drive the robot around like a normal
