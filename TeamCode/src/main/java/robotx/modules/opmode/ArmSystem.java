@@ -8,6 +8,7 @@ import robotx.libraries.XModule;
 
 public class ArmSystem extends XModule {
     public static boolean toggle = true;
+    public static boolean runLoop = true;
     //boolean toggle = true;
     //var setup
     public Servo leftArm;
@@ -16,11 +17,12 @@ public class ArmSystem extends XModule {
     public Servo rightWrist;
     public Servo blockServo;
 
-    double rightArmPos = .712;
-    double leftArmPos = .274;
 
-    double rightWristPos = .925;
-    double leftWristPos = .175;
+    double rightArmPos = .703;
+    double leftArmPos = .283;
+
+    double rightWristPos = .96;
+    double leftWristPos = .14;
 
     long t;
 
@@ -118,10 +120,11 @@ public class ArmSystem extends XModule {
         blockServo = opMode.hardwareMap.servo.get("blockServo");
 
         leftArm.setDirection(Servo.Direction.REVERSE);
-        //rightArm.setDirection(Servo.Direction.REVERSE);
+        rightArm.setDirection(Servo.Direction.REVERSE);
 
         leftWrist.setPosition(leftWristPos);
         rightWrist.setPosition(rightWristPos);
+
         leftArm.setPosition(leftArmPos);
         rightArm.setPosition(rightArmPos);
 
@@ -129,44 +132,46 @@ public class ArmSystem extends XModule {
     }
 
     public void loop() {
-        // button presses, calls methods
-        /*
+        if (runLoop) {
+            // button presses, calls methods
+            /*
 
-         */
-        if(k == 1){
-            leftWrist.setPosition(leftWristPos);
-            rightWrist.setPosition(rightWristPos);
-            leftArm.setPosition(leftArmPos);
-            rightArm.setPosition(rightArmPos);
-        }
-        if(toggle) {
-            if (xGamepad1().b.wasPressed()) {
-                release();
-                t = System.currentTimeMillis();
-            }
-            if (System.currentTimeMillis() - t > 1500) {
-                blockServo.setPosition(.6);
-            }
-            if (xGamepad1().a.wasPressed()) {
-                moveArm();
-            }
-        } else {
-            if (xGamepad2().b.wasPressed()) {
-                release();
-                t = System.currentTimeMillis();
-            }
-            if (System.currentTimeMillis() - t > 1500) {
-                blockServo.setPosition(.6);
-            }
-            if (xGamepad2().y.wasPressed()) {
+             */
+            if (k == 1) {
                 leftWrist.setPosition(leftWristPos);
                 rightWrist.setPosition(rightWristPos);
                 leftArm.setPosition(leftArmPos);
                 rightArm.setPosition(rightArmPos);
-                k=0;
             }
-            if (xGamepad2().a.wasPressed()) {
-                moveArm();
+            if (toggle) {
+                if (xGamepad1().b.wasPressed()) {
+                    release();
+                    t = System.currentTimeMillis();
+                }
+                if (System.currentTimeMillis() - t > 1500) {
+                    blockServo.setPosition(.6);
+                }
+                if (xGamepad1().a.wasPressed()) {
+                    moveArm();
+                }
+            } else {
+                if (xGamepad2().b.wasPressed()) {
+                    release();
+                    t = System.currentTimeMillis();
+                }
+                if (System.currentTimeMillis() - t > 1500) {
+                    blockServo.setPosition(.6);
+                }
+                if (xGamepad2().y.wasPressed()) {
+                    leftWrist.setPosition(leftWristPos);
+                    rightWrist.setPosition(rightWristPos);
+                    leftArm.setPosition(leftArmPos);
+                    rightArm.setPosition(rightArmPos);
+                    k = 0;
+                }
+                if (xGamepad2().a.wasPressed()) {
+                    moveArm();
+                }
             }
         }
     }

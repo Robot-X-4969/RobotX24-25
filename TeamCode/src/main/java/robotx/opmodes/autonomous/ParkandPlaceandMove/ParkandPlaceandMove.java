@@ -58,6 +58,10 @@ public class ParkandPlaceandMove extends LinearOpMode {
         liftMotors = new LiftMotors(this);
         liftMotors.init();
 
+        autonMethods = new AutonMethods(this);
+        autonMethods.init();
+
+        autonMethods.start();
         //odomSystem.start();
         mecanumDrive.start();
         orientationDrive.start();
@@ -155,7 +159,7 @@ public class ParkandPlaceandMove extends LinearOpMode {
                     autonMethods.DriveForward(0.5);
                     sleep(1500);
                     autonMethods.ArmUp();
-                    sleep(750);
+                    sleep(1400);
                     autonMethods.DriveStop();
                     sleep(10);
                     autonMethods.Release();
@@ -187,7 +191,7 @@ public class ParkandPlaceandMove extends LinearOpMode {
                     autonMethods.DriveForward(0.5);
                     sleep(1500);
                     autonMethods.ArmUp();
-                    sleep(750);
+                    sleep(1400);
                     autonMethods.DriveStop();
                     sleep(10);
                     autonMethods.Release();
@@ -212,14 +216,13 @@ public class ParkandPlaceandMove extends LinearOpMode {
                 case "BSL":
                     telemetry.addData("current run", sideSelect);
                     telemetry.update();
-                    sleep(100);
                     autonMethods.StrafeRight(0.5);
                     sleep(1200);
                     autonMethods.DriveStop();
                     sleep(50);
                     autonMethods.ArmUp();
                     autonMethods.DriveForward(0.5);
-                    sleep(2000);
+                    sleep(15-00);
                     autonMethods.DriveStop();
                     sleep(50);
                     autonMethods.Release();

@@ -103,6 +103,7 @@ public class OpenCvScan extends LinearOpMode {
         }
     }
 
+
     public static class SkystoneDeterminationPipeline extends OpenCvPipeline {
 
         /*
@@ -117,10 +118,11 @@ public class OpenCvScan extends LinearOpMode {
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(200,150);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(70, 130);
+        //right side of object is even with inside of camera
 
-        static final int REGION_WIDTH = 10;
-        static final int REGION_HEIGHT = 10;
+        static final int REGION_WIDTH = 20;
+        static final int REGION_HEIGHT = 20;
 
         Point region1_pointA = new Point(
                 REGION1_TOPLEFT_ANCHOR_POINT.x,
@@ -128,6 +130,15 @@ public class OpenCvScan extends LinearOpMode {
         Point region1_pointB = new Point(
                 REGION1_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
                 REGION1_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
+
+        //200, 150 right
+        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(200, 150);
+        Point region2_pointA = new Point(
+                REGION2_TOPLEFT_ANCHOR_POINT.x,
+                REGION2_TOPLEFT_ANCHOR_POINT.y);
+        Point region2_pointB = new Point(
+                REGION2_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
+                REGION2_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
 
         /*
          * Working variables
@@ -194,6 +205,21 @@ public class OpenCvScan extends LinearOpMode {
                     input, // Buffer to draw on
                     region1_pointA, // First point which defines the rectangle
                     region1_pointB, // Second point which defines the rectangle
+                    GREEN, // The color the rectangle is drawn in
+                    -1); // Negative thickness means solid fill
+
+            Imgproc.rectangle(
+                    input, // Buffer to draw on
+                    region2_pointA, // First point which defines the rectangle
+                    region2_pointB, // Second point which defines the rectangle
+                    BLUE, // The color the rectangle is drawn in
+                    2); // Thickness of the rectangle lines
+
+
+            Imgproc.rectangle(
+                    input, // Buffer to draw on
+                    region2_pointA, // First point which defines the rectangle
+                    region2_pointB, // Second point which defines the rectangle
                     GREEN, // The color the rectangle is drawn in
                     -1); // Negative thickness means solid fill
 

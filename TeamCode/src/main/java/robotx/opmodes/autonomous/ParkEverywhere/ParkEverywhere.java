@@ -94,7 +94,6 @@ public class ParkEverywhere extends LinearOpMode {
                     telemetry.addData("current run", sideSelect);
                     telemetry.update();
                     sleep(100);
-                    StrafeRight(-0.5,2400);
                     sleep(50);
                     DriveForward(0.5, 1800);
                     sleep(1000);
@@ -102,23 +101,23 @@ public class ParkEverywhere extends LinearOpMode {
                 case "RSL":
                     telemetry.addData("current run", sideSelect);
                     telemetry.update();
-                    sleep(100);
-                    DriveForward(0.5, 2300);
+                    StrafeLeft(.5,425);
+                    sleep(1000);
+                    DriveForward(0.5, 3000);
                     sleep(1000);
                     break;
                 case "BSR":
                     telemetry.addData("current run", sideSelect);
                     telemetry.update();
-                    sleep(100);
-                    DriveForward(0.5, 2300);
+                    StrafeRight(.5,425);
+                    sleep(1000);
+                    DriveForward(0.5, 3000);
                     sleep(1000);
                     break;
                 case "BSL":
                     telemetry.addData("current run", sideSelect);
                     telemetry.update();
                     sleep(100);
-                    StrafeRight(0.5,2400);
-                    sleep(50);
                     DriveForward(0.5, 1800);
                     sleep(1000);
                     break;
@@ -132,98 +131,54 @@ public class ParkEverywhere extends LinearOpMode {
 
     public void DriveForward(double power, int time) {
         mecanumDrive.frontLeft.setPower(-power);  //top left when rev is down and ducky wheel is right
-        mecanumDrive.frontRight.setPower(-power); //bottom left
+        mecanumDrive.frontRight.setPower(power); //bottom left
         mecanumDrive.backLeft.setPower(-power);   //top right
         mecanumDrive.backRight.setPower(power); // bottom right
         sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
+        mecanumDrive.frontLeft.setPower(0);  //top left when rev is down and ducky wheel is right
+        mecanumDrive.frontRight.setPower(0); //bottom left
+        mecanumDrive.backLeft.setPower(0);   //top right
+        mecanumDrive.backRight.setPower(0); // bottom right
     }
-
+    public void DriveStop() {
+        mecanumDrive.frontLeft.setPower(0);  //top left when rev is down and ducky wheel is right
+        mecanumDrive.frontRight.setPower(0); //bottom left
+        mecanumDrive.backLeft.setPower(0);   //top right
+        mecanumDrive.backRight.setPower(0); // bottom right
+    }
     public void DriveBackward(double power, int time) {
         mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(power);
+        mecanumDrive.frontRight.setPower(-power);
         mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(-power);
+        mecanumDrive.backRight.setPower(power);
         sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
+        mecanumDrive.frontLeft.setPower(0);  //top left when rev is down and ducky wheel is right
+        mecanumDrive.frontRight.setPower(0); //bottom left
+        mecanumDrive.backLeft.setPower(0);   //top right
+        mecanumDrive.backRight.setPower(0); // bottom right
     }
-
     public void StrafeRight(double power, int time) {
         mecanumDrive.frontLeft.setPower(-power);
-        mecanumDrive.frontRight.setPower(power);
+        mecanumDrive.frontRight.setPower(-power);
         mecanumDrive.backLeft.setPower(power);
         mecanumDrive.backRight.setPower(power);
         sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
+        mecanumDrive.frontLeft.setPower(0);  //top left when rev is down and ducky wheel is right
+        mecanumDrive.frontRight.setPower(0); //bottom left
+        mecanumDrive.backLeft.setPower(0);   //top right
+        mecanumDrive.backRight.setPower(0); // bottom right
     }
-
     public void StrafeLeft(double power, int time) {
         mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(-power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void DiagonalLeft(double power, int time){
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void DiagonalRight(double power, int time){
-        mecanumDrive.frontLeft.setPower(-power);
         mecanumDrive.frontRight.setPower(power);
         mecanumDrive.backLeft.setPower(-power);
-        mecanumDrive.backRight.setPower(power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void TurnLeft(double power, int time) {
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(-power);
-        mecanumDrive.backRight.setPower(power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void TurnRight(double power, int time) {
-        mecanumDrive.frontLeft.setPower(-power);
-        mecanumDrive.frontRight.setPower(power);
-        mecanumDrive.backLeft.setPower(power);
         mecanumDrive.backRight.setPower(-power);
         sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
+        mecanumDrive.frontLeft.setPower(0);  //top left when rev is down and ducky wheel is right
+        mecanumDrive.frontRight.setPower(0); //bottom left
+        mecanumDrive.backLeft.setPower(0);   //top right
+        mecanumDrive.backRight.setPower(0); // bottom right+
     }
+
 
 }
