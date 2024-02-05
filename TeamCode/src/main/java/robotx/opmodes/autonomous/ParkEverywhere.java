@@ -1,22 +1,21 @@
-package robotx.opmodes.autonomous.ParkandPlaceandMove;
+package robotx.opmodes.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 import robotx.modules.autonomous.AutonMethods;
 
-@Disabled
+@Autonomous(name = "ParkEverywhere", group = "ParkEverywhere")
 
-@Autonomous(name = "ParkandPlaceandMoveRSR", group = "ParkandPlaceandMove")
-
-public class ParkandPlaceandMoveRSR extends LinearOpMode {
+public class ParkEverywhere extends LinearOpMode {
 
     //private ElapsedTime runtime = new ElapsedTime();
 
     //Modules being imported
+
     AutonMethods autonMethods;
 
     @Override
@@ -32,6 +31,7 @@ public class ParkandPlaceandMoveRSR extends LinearOpMode {
 
         autonMethods.start();
 
+
         telemetry.addData(">", "Press Play to Start Op Mode");
         telemetry.update();
 
@@ -43,20 +43,20 @@ public class ParkandPlaceandMoveRSR extends LinearOpMode {
         telemetry.addData("Info", "\n a:RSR \n b:RSL \n x:BSR \n y:BSL \n ");
         telemetry.update();
 
-        while (!programSelected){
-            if (gamepad1.a){
+        while (!programSelected) {
+            if (gamepad1.a) {
                 sideSelect = "RSR";
                 programSelected = true;
             }
-            if (gamepad1.b){
+            if (gamepad1.b) {
                 sideSelect = "RSL";
                 programSelected = true;
             }
-            if (gamepad1.x){
+            if (gamepad1.x) {
                 sideSelect = "BSR";
                 programSelected = true;
             }
-            if (gamepad1.y){
+            if (gamepad1.y) {
                 sideSelect = "BSL";
                 programSelected = true;
             }
@@ -77,68 +77,49 @@ public class ParkandPlaceandMoveRSR extends LinearOpMode {
 
             // cstaut cooked here
             // 13V goal, 13.5V max, 12.65 min
-            telemetry.addData("current run", sideSelect);
-            telemetry.update();
-            switch (sideSelect){
+
+            switch (sideSelect) {
                 case "RSR":
+                    telemetry.addData("current run", sideSelect);
+                    telemetry.update();
                     sleep(100);
-                    autonMethods.StrafeRight(-0.5);
-                    sleep(1200);
-                    autonMethods.DriveStop();
-                    sleep(50);
-                    //autonMethods.ArmUp();
                     autonMethods.DriveForward(0.5);
-                    sleep(2000);
-                    autonMethods.DriveStop();
-                    sleep(50);
-                    //autonMethods.Release();
-                    sleep(510);
-                    //autonMethods.Close();
-                    autonMethods.DriveBackward(0.5);
-                    sleep(200);
-                    autonMethods.DriveStop();
-                    sleep(10);
-                    autonMethods.StrafeLeft(0.5);
-                    sleep(1200);
-                    autonMethods.DriveStop();
-                    sleep(10);
-                    //autonMethods.ArmRest();
-                    sleep(500);
-                    autonMethods.DriveForward(0.5);
-                    sleep(500);
+                    sleep(1800);
                     autonMethods.DriveStop();
                     sleep(1000);
                     break;
-                case "RSL" :
-                    //autonMethods.StrafeRight(-0.5,1100);
-                    sleep(1100);
+                case "RSL":
+                    telemetry.addData("current run", sideSelect);
+                    telemetry.update();
+                    autonMethods.StrafeLeft(.5);
+                    sleep(425);
                     autonMethods.DriveStop();
-                    sleep(50);
-                    //UnderBar(0.5,2250);
-                    sleep(10);
-                    autonMethods.Release();
-                    sleep(510);
-                    autonMethods.Close();
-                    autonMethods.DriveBackward(0.5);
-                    sleep(200);
-                    autonMethods.DriveStop();
-                    sleep(10);
-                    autonMethods.StrafeLeft(-0.5);
-                    sleep(1200);
-                    autonMethods.DriveStop();
-                    sleep(10);
-                    autonMethods.ArmRest();
-                    sleep(500);
+                    sleep(1000);
                     autonMethods.DriveForward(0.5);
-                    sleep(500);
+                    sleep(3000);
                     autonMethods.DriveStop();
                     sleep(1000);
                     break;
-                case "BSL" :
-
+                case "BSR":
+                    telemetry.addData("current run", sideSelect);
+                    telemetry.update();
+                    autonMethods.StrafeRight(.5);
+                    sleep(425);
+                    autonMethods.DriveStop();
+                    sleep(1000);
+                    autonMethods.DriveForward(0.5);
+                    sleep(3000);
+                    autonMethods.DriveStop();
+                    sleep(1000);
                     break;
-                case "BSR" :
-
+                case "BSL":
+                    telemetry.addData("current run", sideSelect);
+                    telemetry.update();
+                    sleep(100);
+                    autonMethods.DriveForward(0.5);
+                    sleep(1800);
+                    autonMethods.DriveStop();
+                    sleep(1000);
                     break;
             }
             //sleep until the end
@@ -146,4 +127,6 @@ public class ParkandPlaceandMoveRSR extends LinearOpMode {
 
         }
     }
+
+
 }

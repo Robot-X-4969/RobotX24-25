@@ -1,4 +1,4 @@
-package robotx.opmodes.autonomous.ParkandPlaceandMove;
+package robotx.opmodes.autonomous;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -24,14 +24,6 @@ public class ParkandPlaceandMove extends LinearOpMode {
     //Modules being imported
     AutonMethods autonMethods;
 
-    //Modules being imported
-    MecanumDrive mecanumDrive;
-    OrientationDrive orientationDrive;
-    //OdomSystem odomSystem;
-    ArmSystem armSystem;
-    LiftMotors liftMotors;
-    IntakeSystem intakeSystem;
-
     @Override
 
     public void runOpMode() {
@@ -40,42 +32,10 @@ public class ParkandPlaceandMove extends LinearOpMode {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
-        mecanumDrive = new MecanumDrive(this);
-        mecanumDrive.init();
-
-        orientationDrive = new OrientationDrive(this);
-        orientationDrive.init();
-
-        //odomSystem = new OdomSystem(this);
-        //odomSystem.init();
-
-        armSystem = new ArmSystem(this);
-        armSystem.init();
-
-        intakeSystem = new IntakeSystem(this);
-        intakeSystem.init();
-
-        liftMotors = new LiftMotors(this);
-        liftMotors.init();
-
         autonMethods = new AutonMethods(this);
         autonMethods.init();
 
         autonMethods.start();
-        //odomSystem.start();
-        mecanumDrive.start();
-        orientationDrive.start();
-        armSystem.start();
-        intakeSystem.start();
-        liftMotors.start();
-
-        mecanumDrive.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mecanumDrive.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mecanumDrive.backLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mecanumDrive.backRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-
-
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         Boolean programSelected = false;
         String sideSelect = "";
