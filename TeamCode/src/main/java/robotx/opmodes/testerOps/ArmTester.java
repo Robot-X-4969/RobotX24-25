@@ -39,7 +39,7 @@ public class ArmTester extends OpMode {
     PressHandler gamepad1_left_bumper;
     PressHandler gamepad1_right_bumper;
 
-    double unit = 0.1;
+    double unit = 0.01;
 
 
     @Override
@@ -71,17 +71,13 @@ public class ArmTester extends OpMode {
 
     @Override
     public void start() {
-        /*
+
         // down positions
-        servoPosition1 = .20;
-        servoPosition2 = .79;
-        servoPosition3 = .67;
-        servoPosition4 = .363;
-         */
-        servoPosition1 = .175;
-        servoPosition2 = 0.925;
-        servoPosition3 = .274;
-        servoPosition4 = .712;
+        servoPosition1 = .14;
+        servoPosition2 = .96;
+        servoPosition3 = .283;
+        servoPosition4 = .703;
+
     }
 
     @Override
@@ -155,9 +151,6 @@ public class ArmTester extends OpMode {
         testServo2.setPosition(servoPosition2);
         testServo3.setPosition(servoPosition3);
         testServo4.setPosition(servoPosition4);
-
-        //testServo11.setPosition(0.491);
-        //testServo12.setPosition(0.670);
 
         telemetry.addData("Servo Position 1: ", testServo1.getPosition());
         telemetry.addData("Servo Position 2: ", testServo2.getPosition());
