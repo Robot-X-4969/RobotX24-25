@@ -118,7 +118,7 @@ public class OpenCvScan extends LinearOpMode {
         /*
          * The core values which define the location and size of the sample regions
          */
-        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(70, 130);
+        static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(73, 160);
         //right side of object is even with inside of camera
 
         static final int REGION_WIDTH = 20;
@@ -132,7 +132,7 @@ public class OpenCvScan extends LinearOpMode {
                 REGION1_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
 
         //200, 150 right
-        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(200, 150);
+        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(205, 150);
         Point region2_pointA = new Point(
                 REGION2_TOPLEFT_ANCHOR_POINT.x,
                 REGION2_TOPLEFT_ANCHOR_POINT.y);
