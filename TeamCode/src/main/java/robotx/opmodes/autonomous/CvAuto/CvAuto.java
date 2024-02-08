@@ -30,7 +30,6 @@ import robotx.modules.opmode.ArmSystem;
 import robotx.modules.opmode.IntakeSystem;
 import robotx.modules.opmode.LiftMotors;
 import robotx.modules.autonomous.MecanumDrive;
-import robotx.modules.autonomous.OdomSystem;
 import robotx.modules.opmode.OrientationDrive;
 
 @Disabled
@@ -42,7 +41,6 @@ public class CvAuto extends LinearOpMode {
     SkystoneDeterminationPipeline pipeline;
     MecanumDrive mecanumDrive;
     OrientationDrive orientationDrive;
-    OdomSystem odomSystem;
     ArmSystem armSystem;
     IntakeSystem intakeSystem;
     LiftMotors liftMotors;
@@ -75,9 +73,6 @@ public class CvAuto extends LinearOpMode {
         orientationDrive = new OrientationDrive(this);
         orientationDrive.init();
 
-        //odomSystem = new OdomSystem(this);
-        //odomSystem.init();
-
         armSystem = new ArmSystem(this);
         armSystem.init();
 
@@ -87,7 +82,6 @@ public class CvAuto extends LinearOpMode {
         liftMotors = new LiftMotors(this);
         liftMotors.init();
 
-        //odomSystem.start();
         mecanumDrive.start();
         orientationDrive.start();
         armSystem.start();
@@ -421,12 +415,12 @@ public class CvAuto extends LinearOpMode {
 
                 if (PlacementEval > DetectionEval){
 
-                    StrafeRight(.8,(constantTimeMove1*(PlacementEval-DetectionEval)));
+                    StrafeRight(.6,(constantTimeMove1*(PlacementEval-DetectionEval)));
                 }
 
                 if (PlacementEval < DetectionEval){
 
-                    StrafeLeft(.8,(constantTimeMove1*(Math.abs(PlacementEval-DetectionEval))));
+                    StrafeLeft(.6,(constantTimeMove1*(Math.abs(PlacementEval-DetectionEval))));
 
                 }
 
