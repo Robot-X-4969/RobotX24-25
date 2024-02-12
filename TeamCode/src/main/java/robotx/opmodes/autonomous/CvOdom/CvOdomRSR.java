@@ -118,13 +118,12 @@ public class CvOdomRSR extends LinearOpMode {
                 .build();
 
         TrajectorySequence right = drive.trajectorySequenceBuilder(new Pose2d(11.5, -63.10, Math.toRadians(270)))
-                .lineToLinearHeading(new Pose2d(22.00, -38.00, Math.toRadians(270.00))) //john added
-                .waitSeconds(1) //john added
+                .lineToLinearHeading(new Pose2d(22.00, -35.00, Math.toRadians(270.00))) //john added
                 .lineToLinearHeading(new Pose2d(22.00, -40.00, Math.toRadians(270.00)))
                 .addTemporalMarker(() -> {
-                    intakeSystem.IntakeMotor.setPower(-.35);
+                    intakeSystem.IntakeMotor.setPower(-.25);
                 })
-                .waitSeconds(2)
+                .waitSeconds(2.5)
                 .addTemporalMarker(() -> {
                     intakeSystem.IntakeMotor.setPower(0);
                 })
