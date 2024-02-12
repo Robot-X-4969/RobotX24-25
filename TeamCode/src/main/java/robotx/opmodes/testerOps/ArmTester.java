@@ -5,14 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import robotx.libraries.PressHandler;
-/**
- * Created by Nicholas on 11/6/16.
- * heavily edited by cstaut 11/6/23 lol
- * Use to test the servo at any position.
- * Hold down the back bumpers to change the unit,
- * and press the up and down buttons on the D-Pad to increment/decrement.
- */
-
 @TeleOp(name = "ArmTesterOp", group = "Tests")
 public class ArmTester extends OpMode {
 
