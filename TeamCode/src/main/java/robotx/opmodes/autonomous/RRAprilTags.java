@@ -1,7 +1,9 @@
-package robotx.opmodes.autonomous.CvAuto;
+package robotx.opmodes.autonomous;
 
 import android.util.Size;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -9,6 +11,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.BuiltinCameraDirection;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.util.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
@@ -26,6 +30,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.List;
 
+import robotx.modules.autonomous.OpenCV;
 import robotx.modules.opmode.ArmSystem;
 import robotx.modules.opmode.IntakeSystem;
 import robotx.modules.opmode.LiftMotors;
@@ -34,8 +39,8 @@ import robotx.modules.opmode.OrientationDrive;
 
 @Disabled
 
-@Autonomous(name = "CvAuto", group = "CvAuto")
-public class CvAuto extends LinearOpMode {
+@Autonomous(name = "RRAprilTags", group = "CvAuto")
+public class RRAprilTags extends LinearOpMode {
 
     OpenCvWebcam phoneCam;
     SkystoneDeterminationPipeline pipeline;
@@ -99,25 +104,9 @@ public class CvAuto extends LinearOpMode {
         //openCV camera / pipeline setup
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createWebcam(hardwareMap.get(WebcamName.class, "Webcam 1"), cameraMonitorViewId);
-        pipeline = new SkystoneDeterminationPipeline();
-        phoneCam.setPipeline(pipeline);
-
-        // We set the viewport policy to optimized view so the preview doesn't appear 90 deg
-        // out when the RC activity is in portrait. We do our actual image processing assuming
-        // landscape orientation, though.
+        OpenCV detector = new OpenCV(telemetry);
+        phoneCam.setPipeline(detector);
         phoneCam.setViewportRenderingPolicy(OpenCvCamera.ViewportRenderingPolicy.OPTIMIZE_VIEW);
-
-        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
-            }
-
-            @Override
-            public void onError(int errorCode) {
-
-            }
-        });
 
         // init pixelPos
         String pixelPos = "None";
@@ -153,160 +142,102 @@ public class CvAuto extends LinearOpMode {
         telemetry.addData("Program running: ", sideSelect);
         telemetry.update();
 
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+        // generated
+        TrajectorySequence center = drive.trajectorySequenceBuilder(new Pose2d(-36, 63.1, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-35.5, 37, Math.toRadians(90)))
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(-.25);
+                })
+                .waitSeconds(2)
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(0);
+                })
+                .lineToLinearHeading(new Pose2d(-52,39, Math.toRadians(0)))
+                .lineToConstantHeading(new Vector2d(-52,13))
+                .lineToConstantHeading(new Vector2d(-31.96, 13))
+                .splineToConstantHeading(new Vector2d(23.51, 13), Math.toRadians(0))
+                .build();
+
+        //sets new pose2d for each pixel drop location
+
+        // right
+        TrajectorySequence fullAuton = drive.trajectorySequenceBuilder(new Pose2d(-36.00, 63.1, Math.toRadians(90.00)))
+                .lineToSplineHeading(new Pose2d(-39.00, 32, Math.toRadians(0.00)))
+                .lineToConstantHeading(new Vector2d(-35.00, 32))
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(-.25);
+                })
+                .waitSeconds(2)
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(0);
+                })
+                .lineToLinearHeading(new Pose2d(-38.00, 11.5,Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(23.51, 10.5, Math.toRadians(0)))
+                .build();
+
+        // generated
+        TrajectorySequence left = drive.trajectorySequenceBuilder(new Pose2d(-36, 63.10, Math.toRadians(90)))
+                .lineToLinearHeading(new Pose2d(-44.42, 33.15, Math.toRadians(180.00)))
+                .lineToConstantHeading(new Vector2d(-35.5, 33.00))
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(-.25);
+                })
+                .waitSeconds(2)
+                .addTemporalMarker(() -> {
+                    intakeSystem.IntakeMotor.setPower(0);
+                })
+                .splineTo(new Vector2d(-25.14, 12), Math.toRadians(0.00))
+                .splineTo(new Vector2d(23.51, 13.12), Math.toRadians(0))
+
+                .build();
+
+
         waitForStart();
+
+        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
+            @Override
+            public void onOpened() {
+                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_RIGHT);
+            }
+
+            @Override
+            public void onError(int errorCode) {
+            }
+        });
+
+
+        int PlacementEval = 0;
+        int escapeThereIsAProbem = 0;
+
+        sleep(sleepTime);
+        String position = detector.getPosition();
+
+        if (position.equals("Center")) {
+            fullAuton = center;
+            PlacementEval = 2;
+        } else if (position.equals("Left")) {
+            fullAuton = left;
+            PlacementEval = 1;
+        }
+        else {PlacementEval = 3;}
+        phoneCam.stopStreaming();
+        phoneCam.stopRecordingPipeline();
+        phoneCam.closeCameraDevice();
+
+        drive.setPoseEstimate(fullAuton.start());
+        drive.followTrajectorySequence(fullAuton);
+
+        /**
+         * big note : might need to add stuff for odom to work - some form of loop until complete
+         * */
+
+        // defaults to middle bc that works the most consistently
+
 
         //code that runs
         while (opModeIsActive()) {
 
-            // current opencv relationships found as of (11/21/23)
-            /*
-
-            Blue: Cb < Cr (50 < 200)
-            Red: Cb > Cr (215 > 100)
-            Grey: Cb = Cr
-
-            Will vary based on light conditions, but will hold to be true
-            Gray tiles are used, hence a spike in Cr means blue, spike in Cb is red
-
-            Analysis1 = Cb
-            Analysis2 = Cr
-             */
-
-            //for red side (currently)
-
-            // scanning will work for both sides, just need to change which way we are moving
-            //scan middle
-            switch (sideSelect) {
-                case "RSR" :
-                case "RSL" :
-                    for (int i = 0; i < 500; i++) {
-                        if (pipeline.getAnalysis1() > pipeline.getAnalysis2() + 75) {
-                            pixelPos = "Middle";
-                            break;
-                        }
-                        sleep(5);
-                    }
-                    break;
-                case "BSR":
-                case "BSL":
-                    for (int i = 0; i < 500; i++) {
-                        if (pipeline.getAnalysis2() > pipeline.getAnalysis1() + 75) {
-                            pixelPos = "Middle";
-                            break;
-                        }
-                        sleep(5);
-                    }
-                    break;
-            }
-
-            /**
-             * Need to test the value to move from one line to the other and if need to change camera view
-             */
-            int timeBetweenLines = 150;
-
-            switch (sideSelect){
-                case "RSR":
-
-                case "BSR":
-                    telemetry.addData("current run", sideSelect);
-                    telemetry.update();
-                    sleep(100);
-                    StrafeRight(0.8,timeBetweenLines);
-                    sleep(100);
-                    break;
-                case "RSL":
-                case "BSL":
-                    telemetry.addData("current run", sideSelect);
-                    telemetry.update();
-                    sleep(100);
-                    StrafeLeft(0.8,timeBetweenLines);
-                    sleep(100);
-                    break;
-            }
-
-            //scan outer (away from center)
-            switch (sideSelect) {
-                case "RSR" :
-                case "RSL" :
-                    for (int i = 0; i < 500; i++) {
-                        if (pipeline.getAnalysis1() > pipeline.getAnalysis2() + 15) {
-                            pixelPos = "Right";
-                            break;
-                        }
-                        sleep(1);
-                    }
-                    break;
-                case "BSR":
-                case "BSL":
-                    for (int i = 0; i < 500; i++) {
-                        if (pipeline.getAnalysis2() > pipeline.getAnalysis1() + 15) {
-                            pixelPos = "Right";
-                            break;
-                        }
-                        sleep(1);
-                    }
-                    break;
-            }
-
-            //then logically has to be the other option
-            if (pixelPos.equals("None")) {
-                pixelPos = "Left";
-            }
-
-            telemetry.addData("Position", pixelPos);
-            telemetry.update();
-
-            // close OpenCV camera
-            phoneCam.stopStreaming();
-            phoneCam.stopRecordingPipeline();
-            phoneCam.closeCameraDevice();
-
-            //movements place a pixel and get robot to the board
-
-            if (pixelPos.equals("Left")) {
-                //drive and drop off pixel
-                DriveBackward(0.5, 0);
-                sleep(sleepTime);
-                TurnLeft(-0.5, 0);
-                sleep(sleepTime);
-                DriveBackward(0.5, 0);
-                sleep(sleepTime);
-                DriveForward(0.5, 0);
-                sleep(sleepTime);
-                Unintake(0.50, 0);
-                sleep(sleepTime);
-                DriveForward(0.5, 0);
-                sleep(sleepTime);
-
-            }
-            if (pixelPos.equals("Middle")) {
-                DriveBackward(0.5, 0);
-                sleep(sleepTime);
-                DriveForward(0.5, 0);
-                sleep(sleepTime);
-                Unintake(0.5, 0);
-                sleep(sleepTime);
-                TurnLeft(-0.5, 0);
-                sleep(sleepTime);
-                DriveForward(0.5, 0);
-                sleep(sleepTime);
-            }
-            if (pixelPos.equals("Right")) {
-                StrafeLeft(-0.5, 0);
-                sleep(sleepTime);
-                DriveBackward(0.5, 0);
-                sleep(sleepTime);
-                TurnLeft(-0.5, 0);
-                sleep(sleepTime);
-                DriveBackward(0.5, 0);
-                sleep(sleepTime);
-                DriveForward(0.5, 0);
-                sleep(sleepTime);
-                Unintake(0.5, 0);
-                sleep(sleepTime);
-                DriveForward(0.5, 0);
-                sleep(sleepTime);
-            }
 
             /*
             code to set up getting to apriltags
@@ -319,21 +250,7 @@ public class CvAuto extends LinearOpMode {
             it is iterative, so could set to a low value it would just jerk a lot
              */
 
-            int PlacementEval = 0;
-            int escapeThereIsAProbem = 0;
 
-            switch(pixelPos) {
-
-                case "Left":
-                    PlacementEval = 1;
-                    break;
-                case "Middle":
-                    PlacementEval = 2;
-                    break;
-                case "Right":
-                    PlacementEval = 3;
-                    break;
-            }
 
             //clear telemetry for apriltags
             telemetry.clear();
