@@ -59,7 +59,7 @@ public class CvOdomBSL extends LinearOpMode {
 
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         TrajectorySequence center = drive.trajectorySequenceBuilder(new Pose2d(11.5, 63.10, Math.toRadians(90)))
-                .lineToLinearHeading(new Pose2d(11.5, 39, Math.toRadians(90))) //pixel on ground
+                .lineToLinearHeading(new Pose2d(11.5, 37, Math.toRadians(90))) //pixel on ground
                 .addTemporalMarker(() -> {
                     intakeSystem.IntakeMotor.setPower(-.25);
                 })
@@ -84,7 +84,7 @@ public class CvOdomBSL extends LinearOpMode {
                     armSystem.autonToggleBlock();
                 })
                 .waitSeconds(2)
-                .splineTo(new Vector2d(58.80, 61.03), Math.toRadians(0.00))
+                .lineToLinearHeading(new Pose2d(52, 58, Math.toRadians(-90.00)))
                 .build();
 
         //sets new pose2d for each pixel drop location
@@ -115,7 +115,7 @@ public class CvOdomBSL extends LinearOpMode {
                     armSystem.autonToggleBlock();
                 })
                 .waitSeconds(2)
-                .splineTo(new Vector2d(58.50, 59.39), Math.toRadians(0.00))
+                .lineToLinearHeading(new Pose2d(58.50, 59.39, Math.toRadians(-90.00)))
                 .build();
 
         TrajectorySequence left = drive.trajectorySequenceBuilder(new Pose2d(11.5, 63.10, Math.toRadians(90)))
@@ -132,7 +132,7 @@ public class CvOdomBSL extends LinearOpMode {
                     armSystem.autonMoveArm();
                 })
                 .waitSeconds(2)
-                .lineToConstantHeading(new Vector2d(47.5, 41.45)) //drop on board
+                .lineToConstantHeading(new Vector2d(47.25, 41.45)) //drop on board
                 .addTemporalMarker(() -> {
                     armSystem.autonToggleBlock();
                 })
@@ -143,7 +143,7 @@ public class CvOdomBSL extends LinearOpMode {
                     armSystem.autonToggleBlock();
                 })
                 .waitSeconds(2)
-                .splineTo(new Vector2d(58.21, 59.69), Math.toRadians(0.00))
+                .lineToLinearHeading(new Pose2d(52, 59.69, Math.toRadians(-90.00)))
                 .build();
 
 
@@ -170,7 +170,7 @@ public class CvOdomBSL extends LinearOpMode {
         } else {
             telemetry.addLine("Default odom");
             telemetry.update();
-        }
+        } //stautgoat
 
         phoneCam.stopStreaming();
         phoneCam.stopRecordingPipeline();
@@ -284,4 +284,4 @@ public class CvOdomBSL extends LinearOpMode {
 
     // special note for John - sleeps are to give the servos time to move
 
-}
+} //Charlie is the goat

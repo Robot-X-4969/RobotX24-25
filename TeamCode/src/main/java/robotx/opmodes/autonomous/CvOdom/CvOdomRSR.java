@@ -83,7 +83,7 @@ public class CvOdomRSR extends LinearOpMode {
                     armSystem.autonToggleBlock();
                 })
                 .waitSeconds(2)
-                .splineTo(new Vector2d(58.80, -61.03), Math.toRadians(0.00))
+                .lineToLinearHeading(new Pose2d(50.80, -62, Math.toRadians(90.00)))
                 .build();
 
         //sets new pose2d for each pixel drop location
@@ -114,13 +114,15 @@ public class CvOdomRSR extends LinearOpMode {
                     armSystem.autonToggleBlock();
                 })
                 .waitSeconds(2)
-                .splineTo(new Vector2d(58.50, -61), Math.toRadians(0.00))
+                .lineToLinearHeading(new Pose2d(50.50, -62, Math.toRadians(90.00)))
                 .build();
 
         TrajectorySequence right = drive.trajectorySequenceBuilder(new Pose2d(11.5, -63.10, Math.toRadians(270)))
-                .lineToLinearHeading(new Pose2d(21.00, -40.00, Math.toRadians(270.00)))
+                .lineToLinearHeading(new Pose2d(22.00, -38.00, Math.toRadians(270.00))) //john added
+                .waitSeconds(1) //john added
+                .lineToLinearHeading(new Pose2d(22.00, -40.00, Math.toRadians(270.00)))
                 .addTemporalMarker(() -> {
-                    intakeSystem.IntakeMotor.setPower(-.25);
+                    intakeSystem.IntakeMotor.setPower(-.35);
                 })
                 .waitSeconds(2)
                 .addTemporalMarker(() -> {
@@ -142,7 +144,7 @@ public class CvOdomRSR extends LinearOpMode {
                     armSystem.autonToggleBlock();
                 })
                 .waitSeconds(2)
-                .splineTo(new Vector2d(58.21, -59.69), Math.toRadians(0.00))
+                .splineTo(new Vector2d(58.21, -59.69), Math.toRadians(90.00))
                 .build();
 
 
@@ -185,24 +187,7 @@ public class CvOdomRSR extends LinearOpMode {
     }
 
 
-    /* flipped drop side left
-    fullAuton = drive.trajectorySequenceBuilder(new Pose2d(11.20, 61.92, Math.toRadians(90)))
-        .lineToLinearHeading(new Pose2d(13.72, 34.48, Math.toRadians(360.00)))
-        .splineTo(new Vector2d(38.93, 34.18), Math.toRadians(360.00))
-        .splineTo(new Vector2d(51.68, 30.18), Math.toRadians(357.95))
-        .lineToConstantHeading(new Vector2d(45.45, 61.17))
-        .splineTo(new Vector2d(59.39, 61.92), Math.toRadians(0.00))
-        .build();
-    flipped drop side right
-    fullAuton = drive.trajectorySequenceBuilder(new Pose2d(11.20, 61.92, Math.toRadians(91.33)))
-        .lineToLinearHeading(new Pose2d(24.00, 40.00, Math.toRadians(90.00)))
-        .splineTo(new Vector2d(43.23, 42.19), Math.toRadians(360.00))
-        .lineToConstantHeading(new Vector2d(51.53, 41.45))
-        .lineToConstantHeading(new Vector2d(46.05, 60.73))
-        .splineTo(new Vector2d(58.21, 61.77), Math.toRadians(0.00))
-        .build();
 
-     */
 
 
 
