@@ -68,8 +68,8 @@ public class ArmSystem extends XModule {
         if (armDown) {
             leftArm.setPosition(0.48);
             rightArm.setPosition(0.59);
-            leftWrist.setPosition(.87);
-            rightWrist.setPosition(.21);
+            leftWrist.setPosition(.88);
+            rightWrist.setPosition(.19);
             armDown = false;
         } else {
             leftArm.setPosition(leftArmPos);
