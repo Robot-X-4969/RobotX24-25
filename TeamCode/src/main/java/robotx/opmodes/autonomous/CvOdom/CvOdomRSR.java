@@ -62,7 +62,7 @@ public class CvOdomRSR extends LinearOpMode {
                 .addTemporalMarker(() -> {
                     intakeSystem.IntakeMotor.setPower(-.25);
                 })
-                .waitSeconds(2)
+                .waitSeconds(2.5)
                 .addTemporalMarker(() -> {
                     intakeSystem.IntakeMotor.setPower(0);
                 })
