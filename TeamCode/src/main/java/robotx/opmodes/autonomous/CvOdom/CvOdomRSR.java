@@ -59,6 +59,8 @@ public class CvOdomRSR extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         TrajectorySequence center = drive.trajectorySequenceBuilder(new Pose2d(11.5, -63.10, Math.toRadians(270)))
                 .lineToLinearHeading(new Pose2d(11.5, -37, Math.toRadians(270)))
+                .lineToLinearHeading(new Pose2d(12, -37, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(20, -27, Math.toRadians(0)))
                 .addTemporalMarker(() -> {
                     intakeSystem.IntakeMotor.setPower(-.25);
                 })
@@ -72,7 +74,7 @@ public class CvOdomRSR extends LinearOpMode {
                     armSystem.autonMoveArm();
                 })
                 .waitSeconds(2)
-                .lineToLinearHeading(new Pose2d(48, -36.11, Math.toRadians(0.00)))
+                .lineToLinearHeading(new Pose2d(48, -36.5, Math.toRadians(0.00)))
                 .addTemporalMarker(() -> {
                     armSystem.autonToggleBlock();
                 })
