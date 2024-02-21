@@ -31,7 +31,7 @@ public class ArmSystem extends XModule {
     boolean blocked = true;
 
 
-    int k = 1;
+    int k = 2;
     //methods are built into one button as a toggle
 
     public void moveArm() {
@@ -62,7 +62,6 @@ public class ArmSystem extends XModule {
             k=k-2;
         }
     }
-
     public void autonMoveArm() {
         //dont touch without asking cstaut pls
         if (armDown) {

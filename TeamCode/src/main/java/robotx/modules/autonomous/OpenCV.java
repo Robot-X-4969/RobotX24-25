@@ -45,27 +45,30 @@ public class OpenCV extends OpenCvPipeline {
      * The core values which define the location and size of the sample regions
      */
     // 70, 130 middle
-    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(73, 160);
+    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(73, 170);
     //right side of object is even with inside of camera
 
-    static final int REGION_WIDTH = 20;
-    static final int REGION_HEIGHT = 20;
+    static final int REGION1_WIDTH = 15;
+    static final int REGION1_HEIGHT = 15;
 
     Point region1_pointA = new Point(
             REGION1_TOPLEFT_ANCHOR_POINT.x,
             REGION1_TOPLEFT_ANCHOR_POINT.y);
     Point region1_pointB = new Point(
-            REGION1_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
-            REGION1_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
+            REGION1_TOPLEFT_ANCHOR_POINT.x + REGION1_WIDTH,
+            REGION1_TOPLEFT_ANCHOR_POINT.y + REGION1_HEIGHT);
 
     //200, 150 right
-    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(205, 150);
+    static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(205, 175);
+
+    static final int REGION2_WIDTH = 15;
+    static final int REGION2_HEIGHT = 15;
     Point region2_pointA = new Point(
             REGION2_TOPLEFT_ANCHOR_POINT.x,
             REGION2_TOPLEFT_ANCHOR_POINT.y);
     Point region2_pointB = new Point(
-            REGION2_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
-            REGION2_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
+            REGION2_TOPLEFT_ANCHOR_POINT.x + REGION2_WIDTH,
+            REGION2_TOPLEFT_ANCHOR_POINT.y + REGION2_HEIGHT);
 
     /*
      * Working variables

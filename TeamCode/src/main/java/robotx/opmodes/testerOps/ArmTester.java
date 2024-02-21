@@ -20,6 +20,12 @@ public class ArmTester extends OpMode {
     double servoPosition3;
     double servoPosition4;
 
+    double downPosition1;
+    double downPosition2;
+    double downPosition3;
+    double downPosition4;
+    boolean down = false;
+
     PressHandler gamepad1_dpad_up;
     PressHandler gamepad1_dpad_down;
     PressHandler gamepad1_dpad_left;
@@ -30,6 +36,7 @@ public class ArmTester extends OpMode {
     PressHandler gamepad1_y;
     PressHandler gamepad1_left_bumper;
     PressHandler gamepad1_right_bumper;
+    PressHandler gamepad1_back;
 
     double unit = 0.01;
 
@@ -53,6 +60,7 @@ public class ArmTester extends OpMode {
         gamepad1_x = new PressHandler();
         gamepad1_left_bumper = new PressHandler();
         gamepad1_right_bumper = new PressHandler();
+        gamepad1_back = new PressHandler();
 
         //testServo11.setDirection(Servo.Direction.REVERSE);
         //testServo12.setDirection(Servo.Direction.REVERSE);
@@ -69,6 +77,11 @@ public class ArmTester extends OpMode {
         servoPosition2 = .19;
         servoPosition3 = .48;
         servoPosition4 = .59;
+
+        downPosition1 = 0;
+        downPosition2 = 0;
+        downPosition3 = 0;
+        downPosition4 = 0;
     }
 
     @Override
@@ -84,9 +97,17 @@ public class ArmTester extends OpMode {
         gamepad1_x.update(gamepad1.x);
         gamepad1_left_bumper.update(gamepad1.left_bumper);
         gamepad1_right_bumper.update(gamepad1.right_bumper);
+        gamepad1_back.update(gamepad1.back);
 
+        if(gamepad1_back.onPress()){
+            down = !down;
+        }
         if (gamepad1_b.onPress()) {
-            servoPosition4 += unit;
+            if(down) {
+                servoPosition4 += unit;
+            } else {
+                downPosition4 += unit;
+            }
         }
         if (gamepad1_left_bumper.onPress()) {
             unit /= 10;
@@ -103,25 +124,53 @@ public class ArmTester extends OpMode {
         telemetry.addData("Unit: ", unit);
 
         if (gamepad1_dpad_up.onPress()) {
-            servoPosition1 += unit;
+            if(down) {
+                servoPosition1 += unit;
+            } else {
+                downPosition1 += unit;
+            }
         }
         if (gamepad1_dpad_down.onPress()) {
-            servoPosition1 -= unit;
+            if(down) {
+                servoPosition1 -= unit;
+            } else {
+                downPosition1 -= unit;
+            }
         }
         if (gamepad1_dpad_right.onPress()) {
-            servoPosition3 += unit;
+            if(down) {
+                servoPosition3 += unit;
+            } else {
+                downPosition3 += unit;
+            }
         }
         if (gamepad1_dpad_left.onPress()) {
-            servoPosition3 -= unit;
+            if(down) {
+                servoPosition3 -= unit;
+            } else {
+                downPosition3 -= unit;
+            }
         }
         if (gamepad1_y.onPress()) {
-            servoPosition2 += unit;
+            if(down) {
+                servoPosition2 += unit;
+            } else {
+                downPosition2 += unit;
+            }
         }
         if (gamepad1_x.onPress()) {
-            servoPosition4 -= unit;
+            if(down) {
+                servoPosition4 -= unit;
+            } else {
+                downPosition4 -= unit;
+            }
         }
         if (gamepad1_a.onPress()) {
-            servoPosition2 -= unit;
+            if(down) {
+                servoPosition2 -= unit;
+            } else {
+                downPosition2 -= unit;
+            }
         }
 
         if (servoPosition1 > 1.0) {
@@ -130,13 +179,52 @@ public class ArmTester extends OpMode {
         if (servoPosition2 > 1.0) {
             servoPosition2 = 1.0;
         }
+        if (servoPosition3 > 1.0) {
+            servoPosition3 = 1.0;
+        }
+        if (servoPosition4 > 1.0) {
+            servoPosition4 = 1.0;
+        }
 
-            if (servoPosition1 < 0.0) {
-                servoPosition1 = 0.0;
-            }
-            if (servoPosition2 < 0.0) {
-                servoPosition2 = 0.0;
-            }
+        if (servoPosition1 < 0.0) {
+            servoPosition1 = 0.0;
+        }
+        if (servoPosition2 < 0.0) {
+            servoPosition2 = 0.0;
+        }
+        if (servoPosition3 < 0.0) {
+            servoPosition3 = 0.0;
+        }
+        if (servoPosition4 < 0.0) {
+            servoPosition4 = 0.0;
+        }
+
+
+        if (downPosition1 > 1.0) {
+            downPosition1 = 1.0;
+        }
+        if (downPosition2 > 1.0) {
+            downPosition2 = 1.0;
+        }
+        if (downPosition3 > 1.0) {
+            downPosition3 = 1.0;
+        }
+        if (downPosition4 > 1.0) {
+            downPosition4 = 1.0;
+        }
+
+        if (downPosition1 < 0.0) {
+            downPosition1 = 0.0;
+        }
+        if (downPosition2 < 0.0) {
+            downPosition2 = 0.0;
+        }
+        if (downPosition3 < 0.0) {
+            downPosition3 = 0.0;
+        }
+        if (downPosition4 < 0.0) {
+            downPosition4 = 0.0;
+        }
 
         testServo1.setPosition(servoPosition1);
         testServo2.setPosition(servoPosition2);
