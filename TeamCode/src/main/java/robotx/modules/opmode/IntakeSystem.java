@@ -33,7 +33,7 @@ public class IntakeSystem extends XModule {
     }
 
     public void loop() {
-        leftIntake.setPosition(.261);
+        leftIntake.setPosition(.301);
         rightIntake.setPosition(.738);
         if (toggle) {
             if (xGamepad1().x.isDown()) {
