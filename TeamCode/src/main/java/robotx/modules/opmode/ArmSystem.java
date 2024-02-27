@@ -31,7 +31,7 @@ public class ArmSystem extends XModule {
     boolean blocked = true;
 
 
-    int k = 2;
+    int k = 1;
     //methods are built into one button as a toggle
 
     public void moveArm() {
@@ -66,7 +66,7 @@ public class ArmSystem extends XModule {
     }
     public void autonMoveArm() {
         //dont touch without asking cstaut pls
-        if (armDown) {
+        if (k == 0) {
             leftArm.setPosition(0.48);
             rightArm.setPosition(0.59);
             leftWrist.setPosition(.84);
