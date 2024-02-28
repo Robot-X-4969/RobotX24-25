@@ -34,7 +34,7 @@ public class ArmSystem extends XModule {
     int k = 1;
     //methods are built into one button as a toggle
 
-    public void moveArm() {
+    public void autonMoveArm() {
         if (k == 0) {
             //DOWN
             leftArm.setPosition(leftArmPos);
@@ -64,20 +64,34 @@ public class ArmSystem extends XModule {
             k=k-2;
         }
     }
-    public void autonMoveArm() {
-        //dont touch without asking cstaut pls
+    public void moveArm() {
         if (k == 0) {
-            leftArm.setPosition(0.48);
-            rightArm.setPosition(0.59);
-            leftWrist.setPosition(.84);
-            rightWrist.setPosition(.167);
-            armDown = false;
-        } else {
+            //DOWN
             leftArm.setPosition(leftArmPos);
             rightArm.setPosition(rightArmPos);
             leftWrist.setPosition(leftWristPos);
             rightWrist.setPosition(rightWristPos);
-            armDown = true;
+
+            blockServo.setPosition(.6);
+            k++;
+        }
+        else if (k == 1){
+            leftWrist.setPosition(.89);
+            rightWrist.setPosition(.119);
+            leftArm.setPosition(.48);
+            rightArm.setPosition(.48);
+            k++;
+        }
+        else{
+            //UP
+            leftWrist.setPosition(1.0);
+            rightWrist.setPosition(0.10);
+            leftArm.setPosition(.517);
+            rightArm.setPosition(0.537);
+
+
+            blockServo.setPosition(.6);
+            k=k-2;
         }
     }
 
@@ -104,7 +118,7 @@ public class ArmSystem extends XModule {
 
     public void release()
     {
-        blockServo.setPosition(.1);
+        blockServo.setPosition(.05);
     }
 
 
