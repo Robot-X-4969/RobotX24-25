@@ -22,7 +22,6 @@ public class IntakeSystem extends XModule {
     public IntakeSystem(OpMode op) {
         super(op);
     }
-
     public void init() { 
 
         //init motors from configs
@@ -30,6 +29,9 @@ public class IntakeSystem extends XModule {
         IntakeMotor = opMode.hardwareMap.dcMotor.get("IntakeMotor");
         leftIntake = opMode.hardwareMap.servo.get("leftIntake");
         rightIntake = opMode.hardwareMap.servo.get("rightIntake");
+
+        leftIntake.setPosition(.301);
+        rightIntake.setPosition(.738);
     }
 
     public void loop() {
@@ -43,6 +45,13 @@ public class IntakeSystem extends XModule {
             } else {
                 IntakeMotor.setPower(0);
             }
+            if(xGamepad1().left_bumper.isDown()){
+                leftIntake.setPosition(1);
+                rightIntake.setPosition(0);
+            } else if(xGamepad1().right_bumper.isDown()){
+                leftIntake.setPosition(.301);
+                rightIntake.setPosition(.738);
+            }
         } else {
             if(xGamepad2().right_trigger > .25) {
                 IntakeMotor.setPower(power);
@@ -52,6 +61,13 @@ public class IntakeSystem extends XModule {
             }
             else{
                 IntakeMotor.setPower(0);
+            }
+            if(xGamepad2().left_bumper.isDown()){
+                leftIntake.setPosition(1);
+                rightIntake.setPosition(0);
+            } else if(xGamepad1().right_bumper.isDown()){
+                leftIntake.setPosition(.301);
+                rightIntake.setPosition(.738);
             }
         }
     }

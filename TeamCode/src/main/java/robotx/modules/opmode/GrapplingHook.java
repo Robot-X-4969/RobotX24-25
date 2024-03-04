@@ -32,7 +32,7 @@ public class GrapplingHook extends XModule {
             if(xGamepad1().left_bumper.isDown()){
                 GrappleMotor.setPower(1);
             } else if(xGamepad1().right_bumper.isDown()){
-                GrappleMotor.setPower(-0.5);
+                GrappleMotor.setPower(-1);
             } else {
                 GrappleMotor.setPower(0);
             }
@@ -40,7 +40,7 @@ public class GrapplingHook extends XModule {
             if(xGamepad2().left_bumper.isDown()){
                 GrappleMotor.setPower(1);
             } else if(xGamepad2().right_bumper.isDown()){
-                GrappleMotor.setPower(-0.5);
+                GrappleMotor.setPower(-1);
             } else {
                 GrappleMotor.setPower(0);
             }
