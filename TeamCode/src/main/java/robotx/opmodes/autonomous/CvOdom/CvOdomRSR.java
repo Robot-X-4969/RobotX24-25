@@ -60,7 +60,7 @@ public class CvOdomRSR extends LinearOpMode {
         TrajectorySequence center = drive.trajectorySequenceBuilder(new Pose2d(11.5, -63.10, Math.toRadians(270)))
                 .lineToLinearHeading(new Pose2d(20, -25.5, Math.toRadians(0)))
                 .addTemporalMarker(() -> {
-                    intakeSystem.IntakeMotor.setPower(-.4);
+                    intakeSystem.IntakeMotor.setPower(-.25);
                 })
                 .waitSeconds(2.5)
                 .addTemporalMarker(() -> {
@@ -95,7 +95,7 @@ public class CvOdomRSR extends LinearOpMode {
         TrajectorySequence fullAuton = drive.trajectorySequenceBuilder(new Pose2d(11.5, -63.10, Math.toRadians(270)))
                 .lineToLinearHeading(new Pose2d(11.5, -37, Math.toRadians(0)))
                 .addTemporalMarker(() -> {
-                    intakeSystem.IntakeMotor.setPower(-.4);
+                    intakeSystem.IntakeMotor.setPower(-.25);
                 })
                 .waitSeconds(2)
                 .addTemporalMarker(() -> {
@@ -127,7 +127,7 @@ public class CvOdomRSR extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(22.00, -35.00, Math.toRadians(270.00))) //john added
                 .lineToLinearHeading(new Pose2d(22.00, -42.00, Math.toRadians(270.00)))
                 .addTemporalMarker(() -> {
-                    intakeSystem.IntakeMotor.setPower(-.4);
+                    intakeSystem.IntakeMotor.setPower(-.25);
                 })
                 .waitSeconds(2.5)
                 .addTemporalMarker(() -> {

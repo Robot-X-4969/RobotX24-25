@@ -59,8 +59,8 @@ public class CvOdomRSL extends LinearOpMode {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         // generated
         TrajectorySequence center = drive.trajectorySequenceBuilder(new Pose2d(-36, -63.1, Math.toRadians(-90)))
-                .lineToLinearHeading(new Pose2d(-35.5, -33, Math.toRadians(-90)))
-                .lineToLinearHeading(new Pose2d(-35.5, -37.5, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(-35, -36, Math.toRadians(-90)))
+                .lineToLinearHeading(new Pose2d(-39, -38, Math.toRadians(-90)))
                 .addTemporalMarker(() -> {
                     intakeSystem.IntakeMotor.setPower(-.25);
                 })
@@ -71,13 +71,13 @@ public class CvOdomRSL extends LinearOpMode {
                 .lineToLinearHeading(new Pose2d(-52,-39, Math.toRadians(0)))
                 .lineToConstantHeading(new Vector2d(-52,-13))
                 .lineToConstantHeading(new Vector2d(-31.96, -13))
-                .splineToConstantHeading(new Vector2d(23.51, -10), Math.toRadians(0))
-                .lineToConstantHeading(new Vector2d(23.51, -47))
+                .splineToConstantHeading(new Vector2d(26, -10), Math.toRadians(0))
+                .lineToConstantHeading(new Vector2d(26.5, -47))
                 .addTemporalMarker(() -> {
                     armSystem.autonMoveArm();
                 })
                 .waitSeconds(2)
-                .lineToLinearHeading(new Pose2d(48.5, -47, Math.toRadians(0)))
+                .lineToLinearHeading(new Pose2d(48.5, -44.5, Math.toRadians(-10)))
                 .addTemporalMarker(() -> {
                     armSystem.autonToggleBlock();
                 })
@@ -85,7 +85,7 @@ public class CvOdomRSL extends LinearOpMode {
                 .addTemporalMarker(() -> {
                     armSystem.autonMoveArm();
                 })
-                .lineToLinearHeading(new Pose2d(41.89, -16, Math.toRadians(10)))
+                .lineToLinearHeading(new Pose2d(41.89, -16, Math.toRadians(0)))
                 .addTemporalMarker(() -> {
                     armSystem.autonMoveArm();
                     armSystem.autonToggleBlock();
@@ -142,8 +142,8 @@ public class CvOdomRSL extends LinearOpMode {
                 .addTemporalMarker(() -> {
                     intakeSystem.IntakeMotor.setPower(0);
                 })
-                .splineTo(new Vector2d(-25.14, -12), Math.toRadians(0.00))
-                .splineTo(new Vector2d(23.51, -12), Math.toRadians(0))
+                .splineTo(new Vector2d(-26.5, -12), Math.toRadians(0.00))
+                .splineTo(new Vector2d(26, -12), Math.toRadians(0))
                 .addTemporalMarker(() -> {
                     armSystem.autonMoveArm();
                 })

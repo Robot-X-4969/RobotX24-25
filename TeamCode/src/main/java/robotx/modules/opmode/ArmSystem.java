@@ -163,7 +163,7 @@ public class ArmSystem extends XModule {
                     release();
                     t = System.currentTimeMillis();
                 }
-                if (System.currentTimeMillis() - t > 1500) {
+                if (System.currentTimeMillis() - t > 3000) {
                     blockServo.setPosition(.6);
                 }
                 if (xGamepad1().a.wasPressed()) {
@@ -174,7 +174,7 @@ public class ArmSystem extends XModule {
                     release();
                     t = System.currentTimeMillis();
                 }
-                if (System.currentTimeMillis() - t > 1500) {
+                if (System.currentTimeMillis() - t > 3000) {
                     blockServo.setPosition(.6);
                 }
                 if (xGamepad2().y.wasPressed()) {
