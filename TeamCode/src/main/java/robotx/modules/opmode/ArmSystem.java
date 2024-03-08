@@ -41,8 +41,6 @@ public class ArmSystem extends XModule {
             rightArm.setPosition(rightArmPos);
             leftWrist.setPosition(leftWristPos);
             rightWrist.setPosition(rightWristPos);
-
-            blockServo.setPosition(.6);
             k++;
         }
         else if (k == 1){
@@ -54,14 +52,11 @@ public class ArmSystem extends XModule {
         }
         else{
             //UP
-            leftWrist.setPosition(1.0);
-            rightWrist.setPosition(0.10);
-            leftArm.setPosition(.517);
-            rightArm.setPosition(0.537);
-
-
-            blockServo.setPosition(.6);
-            k=k-2;
+            leftWrist.setPosition(.89);
+            rightWrist.setPosition(.119);
+            leftArm.setPosition(.48);
+            rightArm.setPosition(.48);
+            k = 0;
         }
     }
     public void moveArm() {
