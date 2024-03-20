@@ -80,7 +80,7 @@ public class CvOdomBSR extends LinearOpMode {
                     armSystem.autonMoveArm();
                 })
                 .waitSeconds(2)
-                .lineToConstantHeading(new Vector2d(50, 33))
+                .lineToLinearHeading(new Pose2d(50, 33, Math.toRadians(5)))
                 .addTemporalMarker(() -> {
                     armSystem.autonToggleBlock();
                 })
