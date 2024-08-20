@@ -1,5 +1,6 @@
 package robotx.modules.opmode;
 
+import com.qualcomm.hardware.bosch.BHI260IMU;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.bosch.JustLoggingAccelerationIntegrator;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -13,6 +14,19 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 
 import robotx.libraries.XModule;
 
+/*
+    John's Guide to Troubleshooting Orientation Drive
+
+    -Orientation off?
+        -Try checking/changing the sign of deltaAngle
+    -gyroSensor not found?
+        -Check device IMU, and try swapping IMU in code; BHI260 vs BNO055
+    -Movement entirely whack?
+        -Check Control Hub Configs and/or wiring
+    -Don't feel like changing anything?
+        -Hardware problem
+ */
+
 public class OrientationDrive extends XModule {
     public OrientationDrive(OpMode op){super(op);}
 
@@ -22,7 +36,8 @@ public class OrientationDrive extends XModule {
     public DcMotor backLeft;
 
 //Gyro ID
-    public BNO055IMU gyroSensor;
+    public BHI260IMU gyroSensor;
+    //public BNO055IMU gyroSensor;
     public Orientation lastAngles = new Orientation();
     public double globalAngle;
     public double robotAngle;
@@ -74,12 +89,12 @@ public class OrientationDrive extends XModule {
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
-        gyroSensor = opMode.hardwareMap.get(BNO055IMU.class, "gyroSensor");
-        gyroSensor.initialize(parameters);
+        gyroSensor = opMode.hardwareMap.get(BHI260IMU.class, "gyroSensor");
+        gyroSensor.initialize();
     }
     public int getHeadingAngle() {
 
-        Orientation angles = gyroSensor.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        Orientation angles = gyroSensor.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
 
         if (deltaAngle < -180)
