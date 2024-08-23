@@ -17,6 +17,8 @@ import robotx.libraries.XModule;
 /*
     John's Guide to Troubleshooting Orientation Drive
 
+    -Moving Wrong Direction?
+        -try changing joystick angles
     -Orientation off?
         -Try checking/changing the sign of deltaAngle
     -gyroSensor not found?
@@ -102,7 +104,7 @@ public class OrientationDrive extends XModule {
         else if (deltaAngle > 180)
             deltaAngle -= 360;
 //Change in angle compared to orientation: if gyro measures clockwise should add rather than subtract
-        globalAngle -= deltaAngle;
+        globalAngle += deltaAngle;
 
         int finalAngle = (int) globalAngle;
 
@@ -175,17 +177,17 @@ public class OrientationDrive extends XModule {
 
 //Position of joystick when not straight forward
         if (x>0){
-            joystickAngle = Math.atan(-y/x) + Math.toRadians(360);
+            joystickAngle = Math.atan(-y/x) + Math.toRadians(270);
         }
         else if (x<0){
-            joystickAngle = Math.atan(-y/x) + Math.toRadians(180);
+            joystickAngle = Math.atan(-y/x) + Math.toRadians(90);
         }
 //Position of joystick when near perfectly forward
         else if (x == 0 && y>0){
-            joystickAngle = Math.toRadians(270);
+            joystickAngle = Math.toRadians(180);
         }
         else if (x == 0 && y<0){
-            joystickAngle = Math.toRadians(90);
+            joystickAngle = Math.toRadians(360);
         }
 
         xPrime = (Math.sqrt((x*x) + (y*y))) * (Math.cos(robotAngle + joystickAngle));
