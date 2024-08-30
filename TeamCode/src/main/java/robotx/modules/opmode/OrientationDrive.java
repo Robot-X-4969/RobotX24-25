@@ -17,8 +17,12 @@ import robotx.libraries.XModule;
 /*
     John's Guide to Troubleshooting Orientation Drive
 
+    -IMU not found?
+        -Switch between BHI160 anf BNO055
+            -deltaAngle: BNO: -=; BHI: +=
     -Moving Wrong Direction?
         -try changing joystick angles
+            -labeled 'jsOffset' int
     -Orientation off?
         -Try checking/changing the sign of deltaAngle
     -gyroSensor not found?
@@ -29,8 +33,11 @@ import robotx.libraries.XModule;
         -Hardware problem
  */
 
+
 public class OrientationDrive extends XModule {
     public OrientationDrive(OpMode op){super(op);}
+
+    public boolean bno055imu = true;
 
     public DcMotor frontLeft;
     public DcMotor frontRight;
@@ -38,8 +45,8 @@ public class OrientationDrive extends XModule {
     public DcMotor backLeft;
 
 //Gyro ID
-    public BHI260IMU gyroSensor;
-    //public BNO055IMU gyroSensor;
+    //public BHI260IMU gyroSensor;
+    public BNO055IMU gyroSensor;
     public Orientation lastAngles = new Orientation();
     public double globalAngle;
     public double robotAngle;
@@ -91,12 +98,12 @@ public class OrientationDrive extends XModule {
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
-        gyroSensor = opMode.hardwareMap.get(BHI260IMU.class, "gyroSensor");
-        gyroSensor.initialize();
+        gyroSensor = opMode.hardwareMap.get(BNO055IMU.class, "gyroSensor");
+        gyroSensor.initialize(parameters);
     }
     public int getHeadingAngle() {
 
-        Orientation angles = gyroSensor.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        Orientation angles = gyroSensor.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
 
         if (deltaAngle < -180)
@@ -104,7 +111,7 @@ public class OrientationDrive extends XModule {
         else if (deltaAngle > 180)
             deltaAngle -= 360;
 //Change in angle compared to orientation: if gyro measures clockwise should add rather than subtract
-        globalAngle += deltaAngle;
+        globalAngle -= deltaAngle;
 
         int finalAngle = (int) globalAngle;
 
@@ -162,7 +169,7 @@ public class OrientationDrive extends XModule {
             offset = globalAngle;
         }
         */
-        if (xGamepad1().dpad_down.wasPressed()){
+        if (xGamepad1().a.wasPressed() && xGamepad1().b.isDown()){
             offset = globalAngle;
         }
         //opMode.telemetry.addData("Orientation mode:", orientationMode);
@@ -176,18 +183,19 @@ public class OrientationDrive extends XModule {
 
 
 //Position of joystick when not straight forward
+        int jsOffset = 90;
         if (x>0){
-            joystickAngle = Math.atan(-y/x) + Math.toRadians(270);
+            joystickAngle = Math.atan(-y/x) + Math.toRadians(270+jsOffset);
         }
         else if (x<0){
-            joystickAngle = Math.atan(-y/x) + Math.toRadians(90);
+            joystickAngle = Math.atan(-y/x) + Math.toRadians(90+jsOffset);
         }
 //Position of joystick when near perfectly forward
         else if (x == 0 && y>0){
-            joystickAngle = Math.toRadians(180);
+            joystickAngle = Math.toRadians(180+jsOffset);
         }
         else if (x == 0 && y<0){
-            joystickAngle = Math.toRadians(360);
+            joystickAngle = Math.toRadians(360+jsOffset);
         }
 
         xPrime = (Math.sqrt((x*x) + (y*y))) * (Math.cos(robotAngle + joystickAngle));
