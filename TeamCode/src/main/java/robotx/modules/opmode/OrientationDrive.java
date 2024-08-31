@@ -49,8 +49,8 @@ public class OrientationDrive extends XModule {
     public DcMotor backLeft;
 
     //Gyro ID
-    public BHI260IMU gyroSensor;
-    //public BNO055IMU gyroSensor;
+    //public BHI260IMU gyroSensor;
+    public BNO055IMU gyroSensor;
     public Orientation lastAngles = new Orientation();
     public double globalAngle;
     public double robotAngle;
@@ -103,15 +103,15 @@ public class OrientationDrive extends XModule {
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
-        //gyroSensor = opMode.hardwareMap.get(BNO055IMU.class, "gyroSensor");
-        gyroSensor = opMode.hardwareMap.get(BHI260IMU.class, "gyroSensor");
-        gyroSensor.initialize();
+        gyroSensor = opMode.hardwareMap.get(BNO055IMU.class, "gyroSensor");
+        //gyroSensor = opMode.hardwareMap.get(BHI260IMU.class, "gyroSensor");
+        gyroSensor.initialize(parameters);
 
     }
 
     public int getHeadingAngle() {
-        //Orientation angles = gyroSensor.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
-        Orientation angles = gyroSensor.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        Orientation angles = gyroSensor.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        //Orientation angles = gyroSensor.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
 
         if (deltaAngle < -180)
@@ -237,7 +237,7 @@ public class OrientationDrive extends XModule {
         opMode.telemetry.update();
 
         if (xGamepad1().a.isDown()) {
-            dash -= 0.1;
+            dash -= 0.05;
             if (dash > 0) {
                 power = 1;
             } else {
@@ -246,7 +246,7 @@ public class OrientationDrive extends XModule {
             }
         } else {
             if(dash < 10) {
-                dash += 0.2;
+                dash += 0.1;
             }
             power = 0.5;
         }
