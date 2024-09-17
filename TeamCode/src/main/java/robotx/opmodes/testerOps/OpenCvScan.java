@@ -17,7 +17,6 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
 import org.openftc.easyopencv.OpenCvWebcam;
 
-import robotx.modules.opmode.LiftMotors;
 import robotx.modules.autonomous.MecanumDrive;
 import robotx.modules.autonomous.OdomSystem;
 import robotx.modules.opmode.OrientationDrive;
@@ -29,7 +28,6 @@ public class OpenCvScan extends LinearOpMode {
     SkystoneDeterminationPipeline pipeline;
     MecanumDrive mecanumDrive;
     OrientationDrive orientationDrive;
-    LiftMotors liftMotors;
     OdomSystem odomSystem;
 
     @Override
@@ -46,15 +44,11 @@ public class OpenCvScan extends LinearOpMode {
         mecanumDrive = new MecanumDrive(this);
         mecanumDrive.init();
 
-        liftMotors = new LiftMotors(this);
-        liftMotors.init();
-
         odomSystem = new OdomSystem(this);
         odomSystem.init();
 
         mecanumDrive.start();
         orientationDrive.start();
-        liftMotors.start();
 
         mecanumDrive.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mecanumDrive.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);

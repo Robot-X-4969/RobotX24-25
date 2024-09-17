@@ -26,9 +26,7 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.List;
 
-import robotx.modules.opmode.ArmSystem;
 import robotx.modules.opmode.IntakeSystem;
-import robotx.modules.opmode.LiftMotors;
 import robotx.modules.autonomous.MecanumDrive;
 import robotx.modules.opmode.OrientationDrive;
 
@@ -41,9 +39,7 @@ public class CvAuto extends LinearOpMode {
     SkystoneDeterminationPipeline pipeline;
     MecanumDrive mecanumDrive;
     OrientationDrive orientationDrive;
-    ArmSystem armSystem;
     IntakeSystem intakeSystem;
-    LiftMotors liftMotors;
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
@@ -73,20 +69,12 @@ public class CvAuto extends LinearOpMode {
         orientationDrive = new OrientationDrive(this);
         orientationDrive.init();
 
-        armSystem = new ArmSystem(this);
-        armSystem.init();
-
         intakeSystem = new IntakeSystem(this);
         intakeSystem.init();
 
-        liftMotors = new LiftMotors(this);
-        liftMotors.init();
-
         mecanumDrive.start();
         orientationDrive.start();
-        armSystem.start();
         intakeSystem.start();
-        liftMotors.start();
 
         mecanumDrive.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mecanumDrive.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -408,8 +396,6 @@ public class CvAuto extends LinearOpMode {
 
                 // in case of rr it might be funky
                 if (PlacementEval == DetectionEval){
-
-                    ScoreAPixel(500);
                     break;
                 }
 
@@ -727,63 +713,6 @@ public class CvAuto extends LinearOpMode {
         intakeSystem.IntakeMotor.setPower(-power);
         sleep(time);
         intakeSystem.IntakeMotor.setPower(0);
-    }
-
-    public void FirstLift() {
-        double liftPower = 1;
-        int liftTime = 100;
-        liftMotors.LeftLift.setPower(liftPower);
-        liftMotors.RightLift.setPower(-liftPower);
-        sleep(liftTime);
-        liftMotors.LeftLift.setPower(0);
-        liftMotors.RightLift.setPower(0);
-    }
-
-    public void RaiseLift(double power, int time) {
-        liftMotors.LeftLift.setPower(power);
-        liftMotors.RightLift.setPower(-power);
-        sleep(time);
-        liftMotors.LeftLift.setPower(0);
-        liftMotors.RightLift.setPower(0);
-    }
-
-    public void LowerLift(double power, int time) {
-        liftMotors.LeftLift.setPower(-power);
-        liftMotors.RightLift.setPower(power);
-        sleep(time);
-        liftMotors.LeftLift.setPower(0);
-        liftMotors.RightLift.setPower(0);
-    }
-
-    public void ArmRest () {
-        armSystem.leftWrist.setPosition(.175);
-        armSystem.rightWrist.setPosition(.925);
-        armSystem.leftArm.setPosition(.274);
-        armSystem.rightArm.setPosition(.712);
-    }
-
-    public void ArmUp () {
-        armSystem.leftWrist.setPosition((.5775));
-        armSystem.rightWrist.setPosition((.2525));
-        sleep(500);
-        armSystem.leftWrist.setPosition(.86);
-        armSystem.rightWrist.setPosition(.14);
-        armSystem.leftArm.setPosition(.522);
-        armSystem.rightArm.setPosition(0.55);
-    }
-
-    public void Release(int time) {
-        armSystem.blockServo.setPosition(.6);
-        sleep(time);
-        armSystem.blockServo.setPosition(.1);
-        sleep(time);
-    }
-
-    public void ScoreAPixel(int time){
-        ArmUp();
-        Release(time);
-        ArmRest();
-
     }
 
     // special note for John - sleeps are to give the servos time to move

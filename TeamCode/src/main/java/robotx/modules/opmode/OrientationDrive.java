@@ -49,8 +49,8 @@ public class OrientationDrive extends XModule {
     public DcMotor backLeft;
 
     //Gyro ID
-    //public BHI260IMU gyroSensor;
-    public BNO055IMU gyroSensor;
+    public BHI260IMU gyroSensor;
+    //public BNO055IMU gyroSensor;
     public Orientation lastAngles = new Orientation();
     public double globalAngle;
     public double robotAngle;
@@ -68,7 +68,7 @@ public class OrientationDrive extends XModule {
     public boolean orientationMode = true;
     public double offset = 0;
 
-    public double dash = 10;  //for soccer robot
+    //public double dash = 10;  //for soccer robot
 
     public boolean slowMode = false;
     public boolean superSlowMode = false;
@@ -103,14 +103,14 @@ public class OrientationDrive extends XModule {
         // Retrieve and initialize the IMU. We expect the IMU to be attached to an I2C port
         // on a Core Device Interface Module, configured to be a sensor of type "AdaFruit IMU",
         // and named "imu".
-        gyroSensor = opMode.hardwareMap.get(BNO055IMU.class, "gyroSensor");
+        gyroSensor = opMode.hardwareMap.get(BHI260IMU.class, "gyroSensor");
         //gyroSensor = opMode.hardwareMap.get(BHI260IMU.class, "gyroSensor");
-        gyroSensor.initialize(parameters);
+        gyroSensor.initialize();
 
     }
 
     public int getHeadingAngle() {
-        Orientation angles = gyroSensor.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        Orientation angles = gyroSensor.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         //Orientation angles = gyroSensor.getRobotOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         double deltaAngle = angles.firstAngle - lastAngles.firstAngle;
 
@@ -172,7 +172,7 @@ public class OrientationDrive extends XModule {
             switchMode();
         }
         */
-        if (xGamepad1().dpad_down.wasPressed() && xGamepad1().b.isDown()) {
+        if (xGamepad1().dpad_down.wasPressed()) {
             offset = globalAngle;
         }
         //opMode.telemetry.addData("Orientation mode:", orientationMode);
@@ -225,6 +225,7 @@ public class OrientationDrive extends XModule {
         }
          */
 
+        /*
         String display = "";
         for(int i = 0; i < Math.floor(dash); i++){
             display = display+'■';
@@ -232,7 +233,6 @@ public class OrientationDrive extends XModule {
         for(int i = 0; i < 10-Math.floor(dash); i++){
             display = display+'□';
         }
-
         opMode.telemetry.addData("Charge", display);
         opMode.telemetry.update();
 
@@ -250,6 +250,7 @@ public class OrientationDrive extends XModule {
             }
             power = 0.5;
         }
+         */
         if (slowMode) {
             frontLeft.setPower((yPrime - xPrime - r) * (s) * 0.55);
             backRight.setPower((yPrime - xPrime + r) * (s) * 0.55);
