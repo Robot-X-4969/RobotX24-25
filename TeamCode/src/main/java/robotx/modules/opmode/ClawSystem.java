@@ -12,7 +12,8 @@ public class ClawSystem extends XModule {
 
     public static boolean toggle = true;
 
-    public Servo clawServo;
+    public Servo clawServo1;
+    public Servo clawServo2;
 
     public boolean clawed = false;
 
@@ -20,16 +21,20 @@ public class ClawSystem extends XModule {
         super(op);
     }
     public void init() {
-        clawServo = opMode.hardwareMap.servo.get("clawServo");
+        clawServo1 = opMode.hardwareMap.servo.get("clawServo1");
+        clawServo2 = opMode.hardwareMap.servo.get("clawServo2");
 
-        clawServo.setPosition(0);
+        clawServo1.setPosition(0);
+        clawServo2.setPosition(1);
     }
 
     public void moveClaw(){
         if(clawed){
-            clawServo.setPosition(0.25);
+            clawServo1.setPosition(0);
+            clawServo2.setPosition(1);
         } else {
-            clawServo.setPosition(0.5);
+            clawServo1.setPosition(.22);
+            clawServo2.setPosition(.78);
         }
         clawed = !clawed;
     }
