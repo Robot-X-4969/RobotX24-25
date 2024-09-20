@@ -3,8 +3,7 @@ package robotx.opmodes;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import robotx.libraries.XOpMode;
-import robotx.modules.opmode.ClawSystem;
-import robotx.modules.opmode.IntakeSystem;
+import robotx.modules.opmode.LiftSystem;
 import robotx.modules.opmode.OrientationDrive;
 
 
@@ -14,7 +13,7 @@ import robotx.modules.opmode.OrientationDrive;
 @TeleOp(name = "OpMode 23-24", group = "CurrentOp")
 public class OpMode2021v2 extends XOpMode {
     OrientationDrive orientationDrive;
-    ClawSystem clawSystem;
+    LiftSystem liftSystem;
 
     //ToggleMode toggleMode;
 
@@ -25,8 +24,8 @@ public class OpMode2021v2 extends XOpMode {
         orientationDrive = new OrientationDrive(this);
         activeModules.add(orientationDrive);
 
-        clawSystem = new ClawSystem(this);
-        activeModules.add(clawSystem);
+        liftSystem = new LiftSystem(this);
+        activeModules.add(liftSystem);
     }
 
     public void init() {
