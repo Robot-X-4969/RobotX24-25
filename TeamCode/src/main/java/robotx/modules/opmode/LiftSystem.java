@@ -17,7 +17,8 @@ public class LiftSystem extends XModule {
 
     public double power = 1;
 
-    public DcMotor liftMotor;
+    public DcMotor liftMotor1;
+    public DcMotor liftMotor2;
 
     public boolean lifted = false;
 
@@ -28,22 +29,28 @@ public class LiftSystem extends XModule {
     }
 
     public void init() {
-        clawServo2 = opMode.hardwareMap.servo.get("clawServo2");
         liftServo1 = opMode.hardwareMap.servo.get("liftServo1");
         liftServo2 = opMode.hardwareMap.servo.get("liftServo2");
-        liftMotor = opMode.hardwareMap.dcMotor.get("liftMotor");
+        liftMotor1 = opMode.hardwareMap.dcMotor.get("liftMotor1");
+        liftMotor2 = opMode.hardwareMap.dcMotor.get("liftMotor2");
 
         liftServo1.setPosition(0);
         liftServo2.setPosition(1);
     }
 
+    // sets lift motor power one to the opposite of lift motor one because that's what makes them work
+    public void raiseLift(double lift1Power) {
+        liftMotor1.setPower(lift1Power);
+        liftMotor2.setPower(-lift1Power);
+    }
+
     public void moveLift() {
         if (lifted) {
-            liftMotor.setPower(power);
+            raiseLift(power);
             liftServo1.setPosition(0);
             liftServo2.setPosition(1);
         } else {
-            liftMotor.setPower(-power);
+            raiseLift(-power);
             liftServo1.setPosition(.22);
             liftServo2.setPosition(.78);
         }
@@ -56,14 +63,14 @@ public class LiftSystem extends XModule {
             moveLift();
         }
         if(System.currentTimeMillis()-t >= 500){
-            liftMotor.setPower(0);
+            raiseLift(0);
         }
         if (xGamepad1().x.isDown()) {
-            liftMotor.setPower(power);
+            raiseLift(power);
         } else if (xGamepad1().y.isDown()) {
-            liftMotor.setPower(-power);
+            raiseLift(-power);
         } else {
-            liftMotor.setPower(0);
+            raiseLift(0);
         }
     }
 }
