@@ -14,6 +14,8 @@ public class LiftSystem extends XModule {
 
     public Servo liftServo1;
     public Servo liftServo2;
+    public Servo liftServo3;
+    public Servo liftServo4;
 
     public double power = 1;
 
@@ -21,6 +23,7 @@ public class LiftSystem extends XModule {
     public DcMotor liftMotor2;
 
     public boolean lifted = false;
+
 
     long t;
 
@@ -31,11 +34,15 @@ public class LiftSystem extends XModule {
     public void init() {
         liftServo1 = opMode.hardwareMap.servo.get("liftServo1");
         liftServo2 = opMode.hardwareMap.servo.get("liftServo2");
+        liftServo3 = opMode.hardwareMap.servo.get("liftServo3");
+        liftServo4 = opMode.hardwareMap.servo.get("liftServo4");
         liftMotor1 = opMode.hardwareMap.dcMotor.get("liftMotor1");
         liftMotor2 = opMode.hardwareMap.dcMotor.get("liftMotor2");
 
-        liftServo1.setPosition(0);
-        liftServo2.setPosition(1);
+        liftServo1.setPosition(.5);
+        liftServo2.setPosition(.5);
+        liftServo3.setPosition(.5);
+        liftServo4.setPosition(.5);
     }
 
     // sets lift motor power one to the opposite of lift motor one because that's what makes them work
@@ -47,17 +54,22 @@ public class LiftSystem extends XModule {
     public void moveLift() {
         if (lifted) {
             raiseLift(power);
-            liftServo1.setPosition(0);
-            liftServo2.setPosition(1);
+            liftServo1.setPosition(.5);
+            liftServo2.setPosition(.5);
+            liftServo3.setPosition(.5);
+            liftServo4.setPosition(.5);
         } else {
             raiseLift(-power);
-            liftServo1.setPosition(.22);
-            liftServo2.setPosition(.78);
+            liftServo1.setPosition(0);
+            liftServo2.setPosition(1);
+            liftServo3.setPosition(0);
+            liftServo4.setPosition(1);
         }
         lifted = !lifted;
         t = System.currentTimeMillis();
     }
 
+    
     public void loop() {
         if (xGamepad1().a.wasPressed()) {
             moveLift();
