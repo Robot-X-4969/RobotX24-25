@@ -13,7 +13,6 @@ public class ToggleMode extends XModule {
     public void loop() {
         // button presses, calls methods
         if (xGamepad1().back.wasPressed()) {
-            IntakeSystem.toggle = !IntakeSystem.toggle;
         }
     }
 }

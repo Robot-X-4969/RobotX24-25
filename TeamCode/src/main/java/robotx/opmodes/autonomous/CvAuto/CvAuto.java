@@ -26,7 +26,6 @@ import org.openftc.easyopencv.OpenCvWebcam;
 
 import java.util.List;
 
-import robotx.modules.opmode.IntakeSystem;
 import robotx.modules.autonomous.MecanumDrive;
 import robotx.modules.opmode.OrientationDrive;
 
@@ -39,7 +38,6 @@ public class CvAuto extends LinearOpMode {
     SkystoneDeterminationPipeline pipeline;
     MecanumDrive mecanumDrive;
     OrientationDrive orientationDrive;
-    IntakeSystem intakeSystem;
 
     private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
 
@@ -69,12 +67,8 @@ public class CvAuto extends LinearOpMode {
         orientationDrive = new OrientationDrive(this);
         orientationDrive.init();
 
-        intakeSystem = new IntakeSystem(this);
-        intakeSystem.init();
-
         mecanumDrive.start();
         orientationDrive.start();
-        intakeSystem.start();
 
         mecanumDrive.frontLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mecanumDrive.frontRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -261,7 +255,6 @@ public class CvAuto extends LinearOpMode {
                 sleep(sleepTime);
                 DriveForward(0.5, 0);
                 sleep(sleepTime);
-                Unintake(0.50, 0);
                 sleep(sleepTime);
                 DriveForward(0.5, 0);
                 sleep(sleepTime);
@@ -272,7 +265,6 @@ public class CvAuto extends LinearOpMode {
                 sleep(sleepTime);
                 DriveForward(0.5, 0);
                 sleep(sleepTime);
-                Unintake(0.5, 0);
                 sleep(sleepTime);
                 TurnLeft(-0.5, 0);
                 sleep(sleepTime);
@@ -290,7 +282,6 @@ public class CvAuto extends LinearOpMode {
                 sleep(sleepTime);
                 DriveForward(0.5, 0);
                 sleep(sleepTime);
-                Unintake(0.5, 0);
                 sleep(sleepTime);
                 DriveForward(0.5, 0);
                 sleep(sleepTime);
@@ -701,18 +692,6 @@ public class CvAuto extends LinearOpMode {
         mecanumDrive.frontRight.setPower(0);
         mecanumDrive.backLeft.setPower(0);
         mecanumDrive.backRight.setPower(0);
-    }
-
-    public void Intake(double power, int time) {
-        intakeSystem.IntakeMotor.setPower(power);
-        sleep(time);
-        intakeSystem.IntakeMotor.setPower(0);
-    }
-
-    public void Unintake(double power, int time) {
-        intakeSystem.IntakeMotor.setPower(-power);
-        sleep(time);
-        intakeSystem.IntakeMotor.setPower(0);
     }
 
     // special note for John - sleeps are to give the servos time to move
