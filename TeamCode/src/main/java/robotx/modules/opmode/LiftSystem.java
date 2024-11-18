@@ -22,7 +22,7 @@ public class LiftSystem extends XModule {
     public DcMotor liftMotor1;
     public DcMotor liftMotor2;
 
-    public boolean lifted = false;
+    public boolean lifted = true;
 
 
     long t;
@@ -53,17 +53,17 @@ public class LiftSystem extends XModule {
 
     public void moveLift() {
         if (lifted) {
-            raiseLift(power);
-            liftServo1.setPosition(.5);
-            liftServo2.setPosition(.5);
-            liftServo3.setPosition(.5);
-            liftServo4.setPosition(.5);
-        } else {
             raiseLift(-power);
             liftServo1.setPosition(0);
             liftServo2.setPosition(1);
             liftServo3.setPosition(0);
             liftServo4.setPosition(1);
+        } else {
+            raiseLift(power);
+            liftServo1.setPosition(.5);
+            liftServo2.setPosition(.5);
+            liftServo3.setPosition(.5);
+            liftServo4.setPosition(.5);
         }
         lifted = !lifted;
         t = System.currentTimeMillis();
@@ -71,15 +71,15 @@ public class LiftSystem extends XModule {
 
     
     public void loop() {
-        if (xGamepad1().a.wasPressed()) {
+        if(xGamepad1().a.isDown()){
             moveLift();
         }
         if(System.currentTimeMillis()-t >= 500){
             raiseLift(0);
         }
-        if (xGamepad1().x.isDown()) {
+        if (xGamepad1().dpad_up.isDown()) {
             raiseLift(power);
-        } else if (xGamepad1().y.isDown()) {
+        } else if (xGamepad1().dpad_down.isDown()) {
             raiseLift(-power);
         } else {
             raiseLift(0);

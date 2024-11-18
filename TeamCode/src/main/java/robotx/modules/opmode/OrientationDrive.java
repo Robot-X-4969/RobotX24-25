@@ -151,7 +151,7 @@ public class OrientationDrive extends XModule {
             switchMode();
         }
         */
-        if (xGamepad1().dpad_down.wasPressed()) {
+        if (xGamepad1().x.wasPressed()) {
             offset = globalAngle;
         }
         //opMode.telemetry.addData("Orientation mode:", orientationMode);
@@ -180,12 +180,14 @@ public class OrientationDrive extends XModule {
 
         xPrime = (Math.sqrt((x * x) + (y * y))) * (Math.cos(robotAngle + joystickAngle));
         yPrime = -(Math.sqrt((x * x + y * y))) * (Math.sin(robotAngle + joystickAngle));
+        /*
         if(xGamepad1().dpad_left.wasPressed()){
             power -= 0.25;
         }
         if(xGamepad1().dpad_right.wasPressed()){
             power += 0.25;
         }
+         */
         if(power > 1){
             power = 1;
         }
