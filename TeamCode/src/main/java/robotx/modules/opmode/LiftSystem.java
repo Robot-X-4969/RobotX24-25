@@ -69,19 +69,32 @@ public class LiftSystem extends XModule {
         t = System.currentTimeMillis();
     }
 
-    
+
     public void loop() {
-        if(xGamepad1().a.isDown()){
-            moveLift();
-        }
-        if(System.currentTimeMillis()-t >= 500){
-            raiseLift(0);
-        }
-        if (xGamepad1().dpad_up.isDown()) {
-            raiseLift(power);
-        } else if (xGamepad1().dpad_down.isDown()) {
-            raiseLift(-power);
+        if (toggle) {
+            if (xGamepad1().a.isDown()) {
+                moveLift();
+            }
+            if (xGamepad1().dpad_up.isDown()) {
+                raiseLift(power);
+            } else if (xGamepad1().dpad_down.isDown()) {
+                raiseLift(-power);
+            } else {
+                raiseLift(0);
+            }
         } else {
+            if (xGamepad2().a.isDown()) {
+                moveLift();
+            }
+            if (xGamepad2().dpad_up.isDown()) {
+                raiseLift(power);
+            } else if (xGamepad2().dpad_down.isDown()) {
+                raiseLift(-power);
+            } else {
+                raiseLift(0);
+            }
+        }
+        if (System.currentTimeMillis() - t >= 500) {
             raiseLift(0);
         }
     }

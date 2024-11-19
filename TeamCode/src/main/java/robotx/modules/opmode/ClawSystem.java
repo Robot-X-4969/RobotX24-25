@@ -33,8 +33,8 @@ public class ClawSystem extends XModule {
         clawServo.setPosition(0);
     }
 
-    public void claw(){
-        if(open){
+    public void claw() {
+        if (open) {
             clawServo.setPosition(0);
         } else {
             clawServo.setPosition(0.75);
@@ -42,27 +42,48 @@ public class ClawSystem extends XModule {
         open = !open;
     }
 
-    public void moveOnlift(){
-        rotationServo.setPosition(0.66) ;
+    public void moveOnlift() {
+        rotationServo.setPosition(0.66);
     }
-    
+
     public void loop() {
-        if(xGamepad1().a.wasPressed()){
-            moveOnlift();
-        }
-        if(xGamepad1().b.wasPressed()){
-            claw();
-        }
-        if(xGamepad1().dpad_left.isDown()){
-            rotation -= increment;
-            if(rotation < 0){
-                rotation = 0;
+        if (toggle) {
+            if (xGamepad1().a.wasPressed()) {
+                moveOnlift();
             }
-        }
-        if(xGamepad1().dpad_right.isDown()){
-            rotation += increment;
-            if(rotation > 1){
-                rotation = 1;
+            if (xGamepad1().b.wasPressed()) {
+                claw();
+            }
+            if (xGamepad1().dpad_left.isDown()) {
+                rotation -= increment;
+                if (rotation < 0) {
+                    rotation = 0;
+                }
+            }
+            if (xGamepad1().dpad_right.isDown()) {
+                rotation += increment;
+                if (rotation > 1) {
+                    rotation = 1;
+                }
+            }
+        } else {
+            if (xGamepad2().a.wasPressed()) {
+                moveOnlift();
+            }
+            if (xGamepad2().b.wasPressed()) {
+                claw();
+            }
+            if (xGamepad2().dpad_left.isDown()) {
+                rotation -= increment;
+                if (rotation < 0) {
+                    rotation = 0;
+                }
+            }
+            if (xGamepad2().dpad_right.isDown()) {
+                rotation += increment;
+                if (rotation > 1) {
+                    rotation = 1;
+                }
             }
         }
         rotationServo.setPosition(rotation);

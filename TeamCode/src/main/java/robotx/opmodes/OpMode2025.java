@@ -6,18 +6,18 @@ import robotx.libraries.XOpMode;
 import robotx.modules.opmode.ClawSystem;
 import robotx.modules.opmode.LiftSystem;
 import robotx.modules.opmode.OrientationDrive;
+import robotx.modules.opmode.ToggleMode;
 
 
 // sample change
 
 
 @TeleOp(name = "OpMode 24-25", group = "CurrentOp")
-public class OpMode2021v2 extends XOpMode {
+public class OpMode2025 extends XOpMode {
     OrientationDrive orientationDrive;
     LiftSystem liftSystem;
     ClawSystem clawSystem;
-
-    //ToggleMode toggleMode;
+    ToggleMode toggleMode;
 
     public void initModules() {
 
@@ -31,6 +31,9 @@ public class OpMode2021v2 extends XOpMode {
 
         clawSystem = new ClawSystem(this);
         activeModules.add(clawSystem);
+
+        toggleMode = new ToggleMode(this);
+        activeModules.add(toggleMode);
     }
 
     public void init() {
