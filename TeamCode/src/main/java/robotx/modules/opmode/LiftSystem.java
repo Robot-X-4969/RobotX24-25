@@ -48,7 +48,7 @@ public class LiftSystem extends XModule {
     // sets lift motor power one to the opposite of lift motor one because that's what makes them work
     public void raiseLift(double lift1Power) {
         liftMotor1.setPower(lift1Power);
-        liftMotor2.setPower(-lift1Power);
+        liftMotor2.setPower(lift1Power);
     }
 
     public void moveLift() {
