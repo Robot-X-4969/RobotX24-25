@@ -14,9 +14,7 @@ public class AutonomousMovement extends XModule {
     BasicDriveSystem drive;
 
 
-    public AutonomousMovement(OpMode op) {
-        super(op);
-    }
+    public AutonomousMovement(OpMode op) {super(op);}
     public AutonomousMovement(LinearOpMode op, AutonomousSystem s, BasicDriveSystem d) {
         super(op);
         sensors = s;
