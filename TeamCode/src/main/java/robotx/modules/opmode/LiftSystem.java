@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import robotx.libraries.XModule;
+import robotx.libraries.XServo;
 
 public class LiftSystem extends XModule {
 
@@ -12,10 +13,7 @@ public class LiftSystem extends XModule {
 
     public static boolean toggle = true;
 
-    public Servo liftServo1;
-    public Servo liftServo2;
-    public Servo liftServo3;
-    public Servo liftServo4;
+    private final XServo[] liftServos;
 
     public double power = 1;
     public double margin = 0.0;
@@ -30,19 +28,27 @@ public class LiftSystem extends XModule {
 
     public LiftSystem(OpMode op) {
         super(op);
+        liftServos = new XServo[]{
+                new XServo(op, "liftServo1", new double[]{
+                        .75+margin, .25+margin
+                }),
+                new XServo(op, "liftServo2", new double[]{
+                        .25-margin, .75-margin
+                }),
+                new XServo(op, "liftServo3", new double[]{
+                        .75+margin, .25+margin
+                }),
+                new XServo(op, "liftServo4", new double[]{
+                        .25-margin, .75-margin
+                })
+        };
     }
     public void init() {
-        liftServo1 = opMode.hardwareMap.servo.get("liftServo1");
-        liftServo2 = opMode.hardwareMap.servo.get("liftServo2");
-        liftServo3 = opMode.hardwareMap.servo.get("liftServo3");
-        liftServo4 = opMode.hardwareMap.servo.get("liftServo4");
+        for(XServo servo : liftServos){
+            servo.init();
+        }
         liftMotor1 = opMode.hardwareMap.dcMotor.get("liftMotor1");
         liftMotor2 = opMode.hardwareMap.dcMotor.get("liftMotor2");
-
-        liftServo1.setPosition(.75+margin);
-        liftServo2.setPosition(.25-margin);
-        liftServo3.setPosition(.75+margin);
-        liftServo4.setPosition(.25-margin);
     }
 
     // sets lift motor power one to the opposite of lift motor one because that's what makes them work
@@ -54,16 +60,11 @@ public class LiftSystem extends XModule {
     public void moveLift() {
         if (lifted) {
             raiseLift(-power);
-            liftServo1.setPosition(.25+margin);
-            liftServo2.setPosition(.75-margin);
-            liftServo3.setPosition(.25+margin);
-            liftServo4.setPosition(.75-margin);
         } else {
             raiseLift(power);
-            liftServo1.setPosition(.75+margin);
-            liftServo2.setPosition(.25-margin);
-            liftServo3.setPosition(.75+margin);
-            liftServo4.setPosition(.25-margin);
+        }
+        for(XServo servo : liftServos){
+            servo.forward();
         }
         lifted = !lifted;
         t = System.currentTimeMillis();

@@ -21,18 +21,9 @@ public class Button {
     }
 
     public boolean wasPressed() {
-        if (lastValue == false && currentValue == true) {
-            return true;
-        } else {
-            return false;
-        }
+        return !lastValue && currentValue;
     }
     public boolean wasReleased() {
-        if (lastValue == true && currentValue == false) {
-            return true;
-        } else {
-            return false;
-        }
+        return lastValue && !currentValue;
     }
-
 }
