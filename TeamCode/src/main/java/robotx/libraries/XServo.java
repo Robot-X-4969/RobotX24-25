@@ -24,7 +24,7 @@ public class XServo {
         this.positions = new double[]{position};
     }
 
-    public Servo servo;
+    private Servo servo;
     private final String servoPath;
     private final double[] positions;
     private final OpMode op;

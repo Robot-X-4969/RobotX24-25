@@ -180,6 +180,11 @@ public class OrientationDrive extends XModule {
 
         xPrime = (Math.sqrt((x * x) + (y * y))) * (Math.cos(robotAngle + joystickAngle));
         yPrime = -(Math.sqrt((x * x + y * y))) * (Math.sin(robotAngle + joystickAngle));
+
+        //Makes robot slower when picking up blocks
+        if(xGamepad1().a.wasPressed()){
+            toggleSuperSlow();
+        }
         /*
         if(xGamepad1().dpad_left.wasPressed()){
             power -= 0.25;
@@ -202,11 +207,11 @@ public class OrientationDrive extends XModule {
             frontRight.setPower((yPrime + xPrime + r) * (s) * 0.55);
             backLeft.setPower((yPrime + xPrime - r) * (s) * 0.55);
         } else if (superSlowMode) {
-            frontLeft.setPower((yPrime - xPrime - r) * (s) * 0.4);
-            backRight.setPower((yPrime - xPrime + r) * (s) * 0.4);
+            frontLeft.setPower((yPrime - xPrime - r) * (s) * 0.33);
+            backRight.setPower((yPrime - xPrime + r) * (s) * 0.33);
 
-            frontRight.setPower((yPrime + xPrime + r) * (s) * .4);
-            backLeft.setPower((yPrime + xPrime - r) * (s) * .4);
+            frontRight.setPower((yPrime + xPrime + r) * (s) * .33);
+            backLeft.setPower((yPrime + xPrime - r) * (s) * .33);
         } else {
             frontLeft.setPower((yPrime - xPrime - r) * (s) * power);
             backRight.setPower((yPrime - xPrime + r) * (s) * power);

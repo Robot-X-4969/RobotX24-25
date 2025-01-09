@@ -12,8 +12,9 @@ public class ClawSystem extends XModule {
     public static boolean toggle = true;
 
     public double increment = 0.066;
-    
+
     public final XServo clawServo, rotationServo;
+    public final XServo[] mountServos;
 
     public ClawSystem(OpMode op) {
         super(op);
@@ -23,17 +24,29 @@ public class ClawSystem extends XModule {
         rotationServo = new XServo(op, "rotationServo", new double[]{
                 0, 0.66
         });
+        mountServos = new XServo[]{
+                new XServo(op, "mountServo1", new double[]{
+
+                }),
+                new XServo(op, "mountServo2", new double[]{
+
+                })
+        };
     }
 
     public void init() {
         clawServo.init();
         rotationServo.init();
+        mountServos[0].init();
+        mountServos[1].init();
     }
 
     public void loop() {
         if (toggle) {
             if (xGamepad1().a.wasPressed()) {
                 rotationServo.setPosition(0.66);
+                mountServos[0].forward();
+                mountServos[1].forward();
             }
             if (xGamepad1().b.wasPressed()) {
                 clawServo.forward();
@@ -47,6 +60,8 @@ public class ClawSystem extends XModule {
         } else {
             if (xGamepad2().a.wasPressed()) {
                 rotationServo.setPosition(0.66);
+                mountServos[0].forward();
+                mountServos[1].forward();
             }
             if (xGamepad2().b.wasPressed()) {
                 clawServo.forward();
