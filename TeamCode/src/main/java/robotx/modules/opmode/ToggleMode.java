@@ -2,8 +2,6 @@ package robotx.modules.opmode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-
 import robotx.libraries.XModule;
 
 public class ToggleMode extends XModule {

@@ -14,7 +14,7 @@ import robotx.libraries.PressHandler;
  */
 
 @TeleOp(name = "LiftEncodertester", group = "Tests")
-public class LiftEncoderTesterOp extends OpMode{
+public class LiftEncoderTesterOp extends OpMode {
     DcMotor testMotor;
     DcMotor testMotor2;
     //DcMotor testMotor3;
@@ -61,10 +61,12 @@ public class LiftEncoderTesterOp extends OpMode{
         gamepad1_dpad_right = new PressHandler();
         gamepad1_dpad_left = new PressHandler();
     }
+
     @Override
     public void start() {
 
     }
+
     @Override
     public void loop() {
         gamepad1_dpad_up.update(gamepad1.dpad_up);
@@ -72,13 +74,13 @@ public class LiftEncoderTesterOp extends OpMode{
         gamepad1_dpad_left.update(gamepad1.dpad_left);
         gamepad1_dpad_right.update(gamepad1.dpad_right);
 
-        if (gamepad1_dpad_right.onPress()){
+        if (gamepad1_dpad_right.onPress()) {
             scale *= 10;
         }
-        if (gamepad1_dpad_left.onPress()){
-            scale/=10;
+        if (gamepad1_dpad_left.onPress()) {
+            scale /= 10;
         }
-        if (gamepad1_dpad_up.onPress()){
+        if (gamepad1_dpad_up.onPress()) {
             encoderposition += scale;
             encoderposition2 -= scale;
 
@@ -104,7 +106,7 @@ public class LiftEncoderTesterOp extends OpMode{
             //testMotor4.setPower(0);
 
         }
-        if (gamepad1_dpad_down.onPress()){
+        if (gamepad1_dpad_down.onPress()) {
             encoderposition -= scale;
             encoderposition2 += scale;
 

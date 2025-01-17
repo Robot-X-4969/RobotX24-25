@@ -34,13 +34,11 @@ import robotx.modules.opmode.OrientationDrive;
 @Autonomous(name = "CvAuto", group = "CvAuto")
 public class CvAuto extends LinearOpMode {
 
+    private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
     OpenCvWebcam phoneCam;
     SkystoneDeterminationPipeline pipeline;
     MecanumDrive mecanumDrive;
     OrientationDrive orientationDrive;
-
-    private static final boolean USE_WEBCAM = true;  // true for webcam, false for phone camera
-
     /**
      * {@link #aprilTag} is the variable to store our instance of the AprilTag processor.
      */
@@ -159,8 +157,8 @@ public class CvAuto extends LinearOpMode {
             // scanning will work for both sides, just need to change which way we are moving
             //scan middle
             switch (sideSelect) {
-                case "RSR" :
-                case "RSL" :
+                case "RSR":
+                case "RSL":
                     for (int i = 0; i < 500; i++) {
                         if (pipeline.getAnalysis1() > pipeline.getAnalysis2() + 75) {
                             pixelPos = "Middle";
@@ -186,14 +184,14 @@ public class CvAuto extends LinearOpMode {
              */
             int timeBetweenLines = 150;
 
-            switch (sideSelect){
+            switch (sideSelect) {
                 case "RSR":
 
                 case "BSR":
                     telemetry.addData("current run", sideSelect);
                     telemetry.update();
                     sleep(100);
-                    StrafeRight(0.8,timeBetweenLines);
+                    StrafeRight(0.8, timeBetweenLines);
                     sleep(100);
                     break;
                 case "RSL":
@@ -201,15 +199,15 @@ public class CvAuto extends LinearOpMode {
                     telemetry.addData("current run", sideSelect);
                     telemetry.update();
                     sleep(100);
-                    StrafeLeft(0.8,timeBetweenLines);
+                    StrafeLeft(0.8, timeBetweenLines);
                     sleep(100);
                     break;
             }
 
             //scan outer (away from center)
             switch (sideSelect) {
-                case "RSR" :
-                case "RSL" :
+                case "RSR":
+                case "RSL":
                     for (int i = 0; i < 500; i++) {
                         if (pipeline.getAnalysis1() > pipeline.getAnalysis2() + 15) {
                             pixelPos = "Right";
@@ -301,7 +299,7 @@ public class CvAuto extends LinearOpMode {
             int PlacementEval = 0;
             int escapeThereIsAProbem = 0;
 
-            switch(pixelPos) {
+            switch (pixelPos) {
 
                 case "Left":
                     PlacementEval = 1;
@@ -325,7 +323,7 @@ public class CvAuto extends LinearOpMode {
 
             //dependent on location in relation to the board
 
-            while (true){
+            while (true) {
 
                 aprilTag.getDetections();
                 List<AprilTagDetection> currentDetections = aprilTag.getDetections();
@@ -364,7 +362,7 @@ public class CvAuto extends LinearOpMode {
 
                 //catch not scanning properly
 
-                if (DetectionEval == 0){
+                if (DetectionEval == 0) {
                     telemetry.addData("FAIL", "FAIL");
                     telemetry.update();
 
@@ -377,7 +375,7 @@ public class CvAuto extends LinearOpMode {
                 }
 
                 //more error handling
-                if (escapeThereIsAProbem > 10){
+                if (escapeThereIsAProbem > 10) {
                     telemetry.addData("FAIL", "WE ESCAPED");
                     telemetry.update();
                     break;
@@ -386,20 +384,20 @@ public class CvAuto extends LinearOpMode {
                 // if correct, score and end (stop looking)
 
                 // in case of rr it might be funky
-                if (PlacementEval == DetectionEval){
+                if (PlacementEval == DetectionEval) {
                     break;
                 }
 
                 // move to what should be correct place
 
-                if (PlacementEval > DetectionEval){
+                if (PlacementEval > DetectionEval) {
 
-                    StrafeRight(.6,(constantTimeMove1*(PlacementEval-DetectionEval)));
+                    StrafeRight(.6, (constantTimeMove1 * (PlacementEval - DetectionEval)));
                 }
 
-                if (PlacementEval < DetectionEval){
+                if (PlacementEval < DetectionEval) {
 
-                    StrafeLeft(.6,(constantTimeMove1*(Math.abs(PlacementEval-DetectionEval))));
+                    StrafeLeft(.6, (constantTimeMove1 * (Math.abs(PlacementEval - DetectionEval))));
 
                 }
 
@@ -446,7 +444,7 @@ public class CvAuto extends LinearOpMode {
 
         // Choose a camera resolution. Not all cameras support all resolutions.
         //builder.setCameraResolution(new Size(640, 480));
-        builder.setCameraResolution(new Size(640,480));
+        builder.setCameraResolution(new Size(640, 480));
 
         // Enable the RC preview (LiveView).  Set "false" to omit camera monitoring.
         //builder.enableCameraMonitoring(true);
@@ -494,6 +492,104 @@ public class CvAuto extends LinearOpMode {
         telemetry.addLine("RBE = Range, Bearing & Elevation");
 
     }   // end method telemetryAprilTag()
+
+    public void DriveForward(double power, int time) {
+        mecanumDrive.frontLeft.setPower(-power);  //top left when rev is down and ducky wheel is right
+        mecanumDrive.frontRight.setPower(power); //bottom left
+        mecanumDrive.backLeft.setPower(-power);   //top right
+        mecanumDrive.backRight.setPower(power); // bottom right
+        sleep(time);
+        mecanumDrive.frontLeft.setPower(0);
+        mecanumDrive.frontRight.setPower(0);
+        mecanumDrive.backLeft.setPower(0);
+        mecanumDrive.backRight.setPower(0);
+    }
+
+    //Controls
+
+    public void DriveBackward(double power, int time) {
+        mecanumDrive.frontLeft.setPower(power);
+        mecanumDrive.frontRight.setPower(-power);
+        mecanumDrive.backLeft.setPower(power);
+        mecanumDrive.backRight.setPower(-power);
+        sleep(time);
+        mecanumDrive.frontLeft.setPower(0);
+        mecanumDrive.frontRight.setPower(0);
+        mecanumDrive.backLeft.setPower(0);
+        mecanumDrive.backRight.setPower(0);
+    }
+
+    public void StrafeRight(double power, int time) {
+        mecanumDrive.frontLeft.setPower(-power);
+        mecanumDrive.frontRight.setPower(-power);
+        mecanumDrive.backLeft.setPower(power);
+        mecanumDrive.backRight.setPower(power);
+        sleep(time);
+        mecanumDrive.frontLeft.setPower(0);
+        mecanumDrive.frontRight.setPower(0);
+        mecanumDrive.backLeft.setPower(0);
+        mecanumDrive.backRight.setPower(0);
+    }
+
+    public void StrafeLeft(double power, int time) {
+        mecanumDrive.frontLeft.setPower(power);
+        mecanumDrive.frontRight.setPower(power);
+        mecanumDrive.backLeft.setPower(-power);
+        mecanumDrive.backRight.setPower(-power);
+        sleep(time);
+        mecanumDrive.frontLeft.setPower(0);
+        mecanumDrive.frontRight.setPower(0);
+        mecanumDrive.backLeft.setPower(0);
+        mecanumDrive.backRight.setPower(0);
+    }
+
+    public void DiagonalLeft(double power, int time) {
+        mecanumDrive.frontLeft.setPower(power);
+        mecanumDrive.frontRight.setPower(-power);
+        mecanumDrive.backLeft.setPower(power);
+        mecanumDrive.backRight.setPower(-power);
+        sleep(time);
+        mecanumDrive.frontLeft.setPower(0);
+        mecanumDrive.frontRight.setPower(0);
+        mecanumDrive.backLeft.setPower(0);
+        mecanumDrive.backRight.setPower(0);
+    }
+
+    public void DiagonalRight(double power, int time) {
+        mecanumDrive.frontLeft.setPower(-power);
+        mecanumDrive.frontRight.setPower(power);
+        mecanumDrive.backLeft.setPower(-power);
+        mecanumDrive.backRight.setPower(power);
+        sleep(time);
+        mecanumDrive.frontLeft.setPower(0);
+        mecanumDrive.frontRight.setPower(0);
+        mecanumDrive.backLeft.setPower(0);
+        mecanumDrive.backRight.setPower(0);
+    }
+
+    public void TurnLeft(double power, int time) {
+        mecanumDrive.frontLeft.setPower(power);
+        mecanumDrive.frontRight.setPower(-power);
+        mecanumDrive.backLeft.setPower(-power);
+        mecanumDrive.backRight.setPower(power);
+        sleep(time);
+        mecanumDrive.frontLeft.setPower(0);
+        mecanumDrive.frontRight.setPower(0);
+        mecanumDrive.backLeft.setPower(0);
+        mecanumDrive.backRight.setPower(0);
+    }
+
+    public void TurnRight(double power, int time) {
+        mecanumDrive.frontLeft.setPower(-power);
+        mecanumDrive.frontRight.setPower(power);
+        mecanumDrive.backLeft.setPower(power);
+        mecanumDrive.backRight.setPower(-power);
+        sleep(time);
+        mecanumDrive.frontLeft.setPower(0);
+        mecanumDrive.frontRight.setPower(0);
+        mecanumDrive.backLeft.setPower(0);
+        mecanumDrive.backRight.setPower(0);
+    }
 
     public static class SkystoneDeterminationPipeline extends OpenCvPipeline {
 
@@ -544,7 +640,8 @@ public class CvAuto extends LinearOpMode {
             Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
             Core.extractChannel(YCrCb, Cb, 1);
         }
-        void inputToCr(Mat input){
+
+        void inputToCr(Mat input) {
             Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
             Core.extractChannel(YCrCb, Cr, 2);
         }
@@ -589,109 +686,11 @@ public class CvAuto extends LinearOpMode {
             avg1 = avgCb;
             return avgCb;
         }
-        public int getAnalysis2(){
+
+        public int getAnalysis2() {
             avg2 = avgCr;
             return avgCr;
         }
-    }
-
-    //Controls
-
-
-    public void DriveForward(double power, int time) {
-        mecanumDrive.frontLeft.setPower(-power);  //top left when rev is down and ducky wheel is right
-        mecanumDrive.frontRight.setPower(power); //bottom left
-        mecanumDrive.backLeft.setPower(-power);   //top right
-        mecanumDrive.backRight.setPower(power); // bottom right
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void DriveBackward(double power, int time) {
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void StrafeRight(double power, int time) {
-        mecanumDrive.frontLeft.setPower(-power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void StrafeLeft(double power, int time) {
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(power);
-        mecanumDrive.backLeft.setPower(-power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void DiagonalLeft(double power, int time){
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void DiagonalRight(double power, int time){
-        mecanumDrive.frontLeft.setPower(-power);
-        mecanumDrive.frontRight.setPower(power);
-        mecanumDrive.backLeft.setPower(-power);
-        mecanumDrive.backRight.setPower(power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void TurnLeft(double power, int time) {
-        mecanumDrive.frontLeft.setPower(power);
-        mecanumDrive.frontRight.setPower(-power);
-        mecanumDrive.backLeft.setPower(-power);
-        mecanumDrive.backRight.setPower(power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
-    }
-
-    public void TurnRight(double power, int time) {
-        mecanumDrive.frontLeft.setPower(-power);
-        mecanumDrive.frontRight.setPower(power);
-        mecanumDrive.backLeft.setPower(power);
-        mecanumDrive.backRight.setPower(-power);
-        sleep(time);
-        mecanumDrive.frontLeft.setPower(0);
-        mecanumDrive.frontRight.setPower(0);
-        mecanumDrive.backLeft.setPower(0);
-        mecanumDrive.backRight.setPower(0);
     }
 
     // special note for John - sleeps are to give the servos time to move

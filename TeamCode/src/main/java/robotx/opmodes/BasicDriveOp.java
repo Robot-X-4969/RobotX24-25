@@ -8,6 +8,11 @@ import robotx.modules.opmode.OrientationDrive;
 @TeleOp(name = "Basic Drive", group = "CurrentOp")
 public class BasicDriveOp extends XOpMode {
     OrientationDrive orientationDrive;
+
+    {
+
+    }
+
     public void initModules() {
 
         super.initModules();
@@ -17,10 +22,7 @@ public class BasicDriveOp extends XOpMode {
 
     }
 
-
     public void init() {
         super.init();
-    } {
-
     }
 }

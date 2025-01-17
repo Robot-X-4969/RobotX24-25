@@ -155,7 +155,7 @@ public class ServoTesterOp extends OpMode {
         }
 
         if (gamepad1.right_trigger >= 0.25) {
-            if(delay == false) {
+            if (delay == false) {
                 groupNumber += 1;
                 if (groupNumber >= 4) {
                     groupNumber = 1;
@@ -163,7 +163,7 @@ public class ServoTesterOp extends OpMode {
                 delay = true;
             }
         } else if (gamepad1.left_trigger >= 0.25) {
-            if(delay == false) {
+            if (delay == false) {
                 groupNumber -= 1;
                 if (groupNumber <= 0) {
                     groupNumber = 3;
@@ -176,14 +176,14 @@ public class ServoTesterOp extends OpMode {
 
         if (gamepad1_left_bumper.onPress()) {
             unit /= 10;
-            if(unit <= 0.0001){
+            if (unit <= 0.0001) {
                 unit = 0.001;
             }
         }
         if (gamepad1_right_bumper.onPress()) {
             unit *= 10;
-            if(unit >= 1) {
-            unit = 0.1;
+            if (unit >= 1) {
+                unit = 0.1;
             }
         }
         telemetry.addData("Unit: ", unit);

@@ -117,16 +117,14 @@ public class OpenCvScan extends LinearOpMode {
 
         static final int REGION_WIDTH = 20;
         static final int REGION_HEIGHT = 20;
-
+        //200, 150 right
+        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(205, 175);
         Point region1_pointA = new Point(
                 REGION1_TOPLEFT_ANCHOR_POINT.x,
                 REGION1_TOPLEFT_ANCHOR_POINT.y);
         Point region1_pointB = new Point(
                 REGION1_TOPLEFT_ANCHOR_POINT.x + REGION_WIDTH,
                 REGION1_TOPLEFT_ANCHOR_POINT.y + REGION_HEIGHT);
-
-        //200, 150 right
-        static final Point REGION2_TOPLEFT_ANCHOR_POINT = new Point(205, 175);
         Point region2_pointA = new Point(
                 REGION2_TOPLEFT_ANCHOR_POINT.x,
                 REGION2_TOPLEFT_ANCHOR_POINT.y);
@@ -164,7 +162,8 @@ public class OpenCvScan extends LinearOpMode {
             Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
             Core.extractChannel(YCrCb, Cb, 1);
         }
-        void inputToCr(Mat input){
+
+        void inputToCr(Mat input) {
             Imgproc.cvtColor(input, YCrCb, Imgproc.COLOR_RGB2YCrCb);
             Core.extractChannel(YCrCb, Cr, 2);
         }
@@ -224,7 +223,8 @@ public class OpenCvScan extends LinearOpMode {
             avg1 = avgCb;
             return avgCb;
         }
-        public int getAnalysis2(){
+
+        public int getAnalysis2() {
             avg2 = avgCr;
             return avgCr;
         }

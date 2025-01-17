@@ -4,21 +4,21 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 
 /**
-XServo Class
-Use this class to better implement servos; see public methods for more
-
-Created by John Daniher 01/02/25
+ * XServo Class
+ * Use this class to better implement servos; see public methods for more
+ * <p>
+ * Created by John Daniher 01/02/25
  */
 
 public class XServo {
     //Constructor; Requires servo hardware map name and all positions
-    public XServo(OpMode op, String servoPath, double[] positions){
+    public XServo(OpMode op, String servoPath, double[] positions) {
         this.op = op;
         this.servoPath = servoPath;
         this.positions = positions;
     }
 
-    public XServo(OpMode op, String servoPath, double position){
+    public XServo(OpMode op, String servoPath, double position) {
         this.op = op;
         this.servoPath = servoPath;
         this.positions = new double[]{position};
@@ -33,48 +33,48 @@ public class XServo {
     private int lastState = 0;
 
     //Initiates Servo
-    public void init(){
+    public void init() {
         servo = op.hardwareMap.servo.get(servoPath);
         servo.setPosition(positions[state]);
     }
 
     //Sets servo position to specific index
-    public void setIndex(int index){
+    public void setIndex(int index) {
         lastState = state;
         state = index;
         servo.setPosition(positions[state]);
     }
 
     //Cycles forward through positions array
-    public void forward(){
+    public void forward() {
         state++;
-        if(state >= positions.length){
+        if (state >= positions.length) {
             state = 0;
         }
         setIndex(state);
     }
 
     //Cycles backward through positions array
-    public void backward(){
+    public void backward() {
         state--;
-        if(state < 0){
-            state = positions.length-1;
+        if (state < 0) {
+            state = positions.length - 1;
         }
         setIndex(state);
     }
 
     //Goes to last set servo position
-    public void backtrack(){
+    public void backtrack() {
         setIndex(lastState);
     }
 
     //Increments the servo position by inputted double
-    public void increment(double increment){
-        servo.setPosition(servo.getPosition()+increment);
+    public void increment(double increment) {
+        servo.setPosition(servo.getPosition() + increment);
     }
 
     //Starts movement to new position
-    public void setPosition(double position){
+    public void setPosition(double position) {
         servo.setPosition(position);
     }
 }

@@ -10,8 +10,9 @@ public class ClawSystem extends XModule {
     // motors being used
 
     public static boolean toggle = true;
+    public static int state = 0;
 
-    public double increment = 0.066;
+    public double increment = 0.015*3/20;
 
     public final XServo clawServo, rotationServo;
     public final XServo[] mountServos;
@@ -19,17 +20,15 @@ public class ClawSystem extends XModule {
     public ClawSystem(OpMode op) {
         super(op);
         clawServo = new XServo(op, "clawServo", new double[]{
-                0, 0.75
-        });
-        rotationServo = new XServo(op, "rotationServo", new double[]{
                 0, 0.66
         });
+        rotationServo = new XServo(op, "rotationServo", new double[]{0.5});
         mountServos = new XServo[]{
                 new XServo(op, "mountServo1", new double[]{
-
+                        1, .33, .33
                 }),
                 new XServo(op, "mountServo2", new double[]{
-
+                        0, .67*3/20, .67*3/20
                 })
         };
     }
@@ -41,12 +40,20 @@ public class ClawSystem extends XModule {
         mountServos[1].init();
     }
 
+    public void incrementState(){
+        state++;
+        if(state > 2){
+            state = 2;
+        }
+    }
+
     public void loop() {
         if (toggle) {
             if (xGamepad1().a.wasPressed()) {
-                rotationServo.setPosition(0.66);
+                rotationServo.forward();
                 mountServos[0].forward();
                 mountServos[1].forward();
+                incrementState();
             }
             if (xGamepad1().b.wasPressed()) {
                 clawServo.forward();
@@ -59,9 +66,10 @@ public class ClawSystem extends XModule {
             }
         } else {
             if (xGamepad2().a.wasPressed()) {
-                rotationServo.setPosition(0.66);
+                rotationServo.forward();
                 mountServos[0].forward();
                 mountServos[1].forward();
+                incrementState();
             }
             if (xGamepad2().b.wasPressed()) {
                 clawServo.forward();

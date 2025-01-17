@@ -62,7 +62,7 @@ public class OrientationDrive extends XModule {
         frontLeft = opMode.hardwareMap.dcMotor.get("frontLeft");
         frontLeft.setDirection(DcMotorSimple.Direction.REVERSE); //WHEN DOM TRAIN
         frontRight = opMode.hardwareMap.dcMotor.get("frontRight");
-        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        //frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backRight = opMode.hardwareMap.dcMotor.get("backRight");
         //backRight.setDirection(DcMotorSimple.Direction.REVERSE);
         backLeft = opMode.hardwareMap.dcMotor.get("backLeft");
@@ -108,11 +108,7 @@ public class OrientationDrive extends XModule {
     }
 
     public void switchMode() {
-        if (orientationMode) {
-            orientationMode = false;
-        } else {
-            orientationMode = true;
-        }
+        orientationMode = !orientationMode;
     }
 
     public void toggleSlow() {
@@ -172,9 +168,9 @@ public class OrientationDrive extends XModule {
             joystickAngle = Math.atan(-y / x) + Math.toRadians(90 + jsOffset);
         }
 //Position of joystick when near perfectly forward
-        else if (x == 0 && y > 0) {
+        else if (y > 0) {
             joystickAngle = Math.toRadians(180 + jsOffset);
-        } else if (x == 0 && y < 0) {
+        } else if (y < 0) {
             joystickAngle = Math.toRadians(360 + jsOffset);
         }
 
@@ -182,9 +178,7 @@ public class OrientationDrive extends XModule {
         yPrime = -(Math.sqrt((x * x + y * y))) * (Math.sin(robotAngle + joystickAngle));
 
         //Makes robot slower when picking up blocks
-        if(xGamepad1().a.wasPressed()){
-            toggleSuperSlow();
-        }
+        superSlowMode = ClawSystem.state == 1;
         /*
         if(xGamepad1().dpad_left.wasPressed()){
             power -= 0.25;

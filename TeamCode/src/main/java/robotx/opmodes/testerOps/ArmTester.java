@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import robotx.libraries.PressHandler;
+
 @TeleOp(name = "ArmTesterOp", group = "Tests")
 public class ArmTester extends OpMode {
 
@@ -71,7 +72,7 @@ public class ArmTester extends OpMode {
 
     @Override
     public void start() {
-        
+
 
         // down positions
         servoPosition1 = .14;
@@ -100,11 +101,11 @@ public class ArmTester extends OpMode {
         gamepad1_right_bumper.update(gamepad1.right_bumper);
         gamepad1_back.update(gamepad1.back);
 
-        if(gamepad1_back.onPress()){
+        if (gamepad1_back.onPress()) {
             down = !down;
         }
         if (gamepad1_b.onPress()) {
-            if(!down) {
+            if (!down) {
                 servoPosition4 += unit;
             } else {
                 downPosition4 += unit;
@@ -112,62 +113,62 @@ public class ArmTester extends OpMode {
         }
         if (gamepad1_left_bumper.onPress()) {
             unit /= 10;
-            if(unit <= 0.0001){
+            if (unit <= 0.0001) {
                 unit = 0.001;
             }
         }
         if (gamepad1_right_bumper.onPress()) {
             unit *= 10;
-            if(unit >= 1) {
-            unit = 0.1;
+            if (unit >= 1) {
+                unit = 0.1;
             }
         }
         telemetry.addData("Unit: ", unit);
 
         if (gamepad1_dpad_up.onPress()) {
-            if(!down) {
+            if (!down) {
                 servoPosition1 += unit;
             } else {
                 downPosition1 += unit;
             }
         }
         if (gamepad1_dpad_down.onPress()) {
-            if(!down) {
+            if (!down) {
                 servoPosition1 -= unit;
             } else {
                 downPosition1 -= unit;
             }
         }
         if (gamepad1_dpad_right.onPress()) {
-            if(!down) {
+            if (!down) {
                 servoPosition3 += unit;
             } else {
                 downPosition3 += unit;
             }
         }
         if (gamepad1_dpad_left.onPress()) {
-            if(!down) {
+            if (!down) {
                 servoPosition3 -= unit;
             } else {
                 downPosition3 -= unit;
             }
         }
         if (gamepad1_y.onPress()) {
-            if(!down) {
+            if (!down) {
                 servoPosition2 += unit;
             } else {
                 downPosition2 += unit;
             }
         }
         if (gamepad1_x.onPress()) {
-            if(!down) {
+            if (!down) {
                 servoPosition4 -= unit;
             } else {
                 downPosition4 -= unit;
             }
         }
         if (gamepad1_a.onPress()) {
-            if(!down) {
+            if (!down) {
                 servoPosition2 -= unit;
             } else {
                 downPosition2 -= unit;
@@ -227,7 +228,7 @@ public class ArmTester extends OpMode {
             downPosition4 = 0.0;
         }
 
-        if(!down) {
+        if (!down) {
             testServo1.setPosition(servoPosition1);
             testServo2.setPosition(servoPosition2);
             testServo3.setPosition(servoPosition3);

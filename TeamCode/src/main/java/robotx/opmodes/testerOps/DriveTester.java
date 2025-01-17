@@ -3,15 +3,14 @@ package robotx.opmodes.testerOps;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import robotx.libraries.XOpMode;
-import robotx.modules.opmode.testerOps.Tester;
 
 
 // sample change
 
 
-@TeleOp(name = "TesterOp", group = "Tests")
-public class TesterOp extends XOpMode {
-    Tester tester;
+@TeleOp(name = "DriveTester", group = "Tests")
+public class DriveTester extends XOpMode {
+    robotx.modules.opmode.testerOps.DriveTester driveTester;
 
     {
 
@@ -21,8 +20,8 @@ public class TesterOp extends XOpMode {
 
         super.initModules();
 
-        tester = new Tester(this);
-        activeModules.add(tester);
+        driveTester = new robotx.modules.opmode.testerOps.DriveTester(this);
+        activeModules.add(driveTester);
     }
 
     public void init() {

@@ -15,7 +15,7 @@ import robotx.libraries.PressHandler;
  */
 
 @TeleOp(name = "ServoTesterSimple", group = "Tests")
-public class  ServoTesterSimple extends OpMode {
+public class ServoTesterSimple extends OpMode {
 
     Servo testServo1;
     Servo testServo2;
@@ -88,14 +88,14 @@ public class  ServoTesterSimple extends OpMode {
 
         if (gamepad1_left_bumper.onPress()) {
             unit /= 10;
-            if(unit <= 0.0001){
+            if (unit <= 0.0001) {
                 unit = 0.001;
             }
         }
         if (gamepad1_right_bumper.onPress()) {
             unit *= 10;
-            if(unit >= 1) {
-            unit = 0.1;
+            if (unit >= 1) {
+                unit = 0.1;
             }
         }
         telemetry.addData("Unit: ", unit);
